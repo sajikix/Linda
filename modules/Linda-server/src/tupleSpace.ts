@@ -7,6 +7,7 @@ import {
   ReadTakeCallback,
   InsertOneWriteOpResult,
   WatchResponseTuple,
+  InsertData,
 } from "./interfaces";
 import { EventEmitter2 } from "eventemitter2";
 // default:using MongoDB
@@ -29,9 +30,7 @@ export default class tupleSpace {
   }
 
   async write(writeTuple: Tuple, callback: WriteCallback): Promise<void> {
-    const resData: InsertOneWriteOpResult = await this.storage.insert(
-      writeTuple
-    );
+    const resData: InsertData = await this.storage.insert(writeTuple);
     this.emitter.emit("_writeData", writeTuple);
 
     callback(resData);

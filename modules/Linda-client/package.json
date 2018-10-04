@@ -1,7 +1,7 @@
 {
   "name": "Linda-client",
   "version": "1.0.0",
-  "main": "src/lindaClient.ts",
+  "main": "dist/lindaClient.js",
   "author": "Ryusei Sajiki <rsajiki@gmail.com>",
   "license": "MIT",
   "scripts": {

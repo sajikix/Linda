@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const memoryDB_1 = require("../db/memoryDB");
-class storageClient {
-    constructor(tupleSpaceName) {
+var memoryDB_1 = require("../db/memoryDB");
+var storageClient = /** @class */ (function () {
+    function storageClient(tupleSpaceName) {
         this.tupleSpaceName = tupleSpaceName;
         if (memoryDB_1.default[tupleSpaceName]) {
             this.tupleSpace = memoryDB_1.default[tupleSpaceName];
@@ -16,12 +16,12 @@ class storageClient {
         }
     }
     // .map使って書き直せる説
-    get(tuple) {
-        let i;
+    storageClient.prototype.get = function (tuple) {
+        var i;
         for (i = this.tupleSpace.length; i > 0; i--) {
-            let result = this.isMuch(this.tupleSpace[i - 1], tuple);
+            var result = this.isMuch(this.tupleSpace[i - 1], tuple);
             if (result.isMuched) {
-                let resData = Object.assign(this.tupleSpace[i - 1], {
+                var resData = Object.assign(this.tupleSpace[i - 1], {
                     _isMuched: true,
                 });
                 return resData;
@@ -36,10 +36,10 @@ class storageClient {
                 _time: null,
             };
         }
-    }
-    insert(writeTuple) {
-        const time = Date.now();
-        const insertData = {
+    };
+    storageClient.prototype.insert = function (writeTuple) {
+        var time = Date.now();
+        var insertData = {
             _time: time,
             _from: this.tupleSpaceName,
             _payload: writeTuple,
@@ -47,13 +47,13 @@ class storageClient {
         };
         this.tupleSpace.push(insertData);
         return insertData;
-    }
+    };
     //update() {}
-    delete(id) {
+    storageClient.prototype.delete = function (id) {
         this.tupleSpace.splice(id, 1);
-    }
-    isMuch(targetTuple, searchTuple) {
-        for (let operationKey in searchTuple) {
+    };
+    storageClient.prototype.isMuch = function (targetTuple, searchTuple) {
+        for (var operationKey in searchTuple) {
             if (!targetTuple[operationKey]) {
                 return { isMuched: false, res: null };
             }
@@ -62,7 +62,8 @@ class storageClient {
             }
         }
         return { isMuched: true, res: targetTuple };
-    }
-}
+    };
+    return storageClient;
+}());
 exports.default = storageClient;
 //# sourceMappingURL=memoryClient.js.map

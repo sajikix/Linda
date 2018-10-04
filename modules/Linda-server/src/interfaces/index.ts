@@ -20,10 +20,11 @@ export type InsertData = {
   _id?: number;
 };
 
+//FIXME: MemoryClientの時の型
 export type SavedData = {
   _time: number;
   _from: string;
-  _id: ObjectId;
+  _id: number;
   _payload: Object;
 };
 
@@ -31,7 +32,7 @@ export type ResponseTuple = {
   _isMuched: boolean;
   _time: number;
   _from: string;
-  _id: ObjectId;
+  _id: number;
   _payload: Object;
 };
 
@@ -79,7 +80,7 @@ export interface WatchCallback {
 }
 
 export interface WriteCallback {
-  (resData: InsertOneWriteOpResult): void;
+  (resData: InsertData): void;
 }
 
 export interface ReadTakeCallback {
