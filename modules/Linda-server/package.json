@@ -9,7 +9,7 @@
     "server": "node dist/app.js",
     "server:dev": "nodemon dist/app.js -watch src",
     "build": "tsc",
-    "browserify": "browserify dist/pages/tupleSpace.js --debug -o public/js/pages/tupleSpace.js"
+    "webpack": "webpack"
   },
   "author": "Ryusei Sajiki <rsajiki@gmail.com>",
   "license": "MIT",
@@ -25,7 +25,10 @@
     "@types/react-dom": "^16.0.8",
     "@types/socket.io": "^1.4.36",
     "@types/socket.io-client": "^1.4.32",
-    "browserify": "^16.2.3"
+    "awesome-typescript-loader": "^5.2.1",
+    "source-map-loader": "^0.2.4",
+    "webpack": "^4.15.0",
+    "webpack-cli": "^3.0.8"
   },
   "dependencies": {
     "Linda-client": "*",
