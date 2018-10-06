@@ -21292,7 +21292,7 @@ var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 var ReactDOM = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 var Home = function (props) { return (React.createElement("div", null,
     React.createElement("h1", null, "Welcome to Linda"),
-    React.createElement("a", { href: "http://https://github.com/saji-ryu/Linda/modules/Linda-server" }, "github"))); };
+    React.createElement("a", { href: "https://github.com/saji-ryu/Linda/tree/master/modules/Linda-server" }, "github"))); };
 ReactDOM.render(React.createElement(Home, null), document.getElementById("content"));
 
 
