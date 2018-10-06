@@ -1,3 +1,4 @@
 import LindaClient from "./lindaClient";
-module.exports = LindaClient;
+export default LindaClient;
+// module.exports = LindaClient;
 //const lindaClient = new LindaClient();

@@ -6,6 +6,7 @@ import {
   WatchResponseTuple,
   InsertOneWriteOpResult,
   LindaSubscribeOperation,
+  InsertData,
 } from "./interfaces";
 
 export default class Linda {
@@ -38,7 +39,7 @@ export default class Linda {
       socket.on("_write_operation", (data: LindaOperation) => {
         this.tupleSpace(data.tsName).write(
           data.payload,
-          (resData: InsertOneWriteOpResult) => {
+          (resData: InsertData) => {
             socket.emit("_write_response", resData);
           }
         );
