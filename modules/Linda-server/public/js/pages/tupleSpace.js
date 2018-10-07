@@ -31268,9 +31268,8 @@ var TupleSpace = /** @class */ (function (_super) {
     TupleSpace.prototype.watchTuple = function (tuple) {
         var _this = this;
         lindaClient.connect("http://localhost:3000/masuilab", function () {
-            console.log(tuple);
             lindaClient.watch(tuple, function (data) {
-                _this.setState({ tuples: _this.state.tuples.concat([data._payload]) });
+                _this.setState({ tuples: [data._payload].concat(_this.state.tuples) });
             });
         });
     };
@@ -31297,8 +31296,8 @@ var TupleSpace = /** @class */ (function (_super) {
                 React.createElement("button", { onClick: this.writeTuple(this.state.watchingTuple) }, JSON.stringify(this.state.watchingTuple))),
             React.createElement("div", null, "%curl -d 'tuple=" + JSON.stringify(this.state.watchingTuple) + "' " + location.host),
             React.createElement("h2", null, "watch"),
-            React.createElement("div", null, this.state.tuples.map(function (tuple) {
-                return React.createElement("ul", null, JSON.stringify(tuple));
+            React.createElement("div", null, this.state.tuples.map(function (tuple, index) {
+                return React.createElement("ul", { key: index }, JSON.stringify(tuple));
             }))));
     };
     return TupleSpace;

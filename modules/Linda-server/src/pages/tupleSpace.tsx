@@ -42,9 +42,8 @@ class TupleSpace extends React.Component<Props, State> {
     lindaClient.connect(
       "http://localhost:3000/masuilab",
       () => {
-        console.log(tuple);
         lindaClient.watch(tuple, data => {
-          this.setState({ tuples: [...this.state.tuples, data._payload] });
+          this.setState({ tuples: [data._payload, ...this.state.tuples] });
         });
       }
     );
@@ -72,8 +71,8 @@ class TupleSpace extends React.Component<Props, State> {
         </div>
         <h2>{"watch"}</h2>
         <div>
-          {this.state.tuples.map(tuple => {
-            return <ul>{JSON.stringify(tuple)}</ul>;
+          {this.state.tuples.map((tuple, index) => {
+            return <ul key={index}>{JSON.stringify(tuple)}</ul>;
           })}
         </div>
       </div>
