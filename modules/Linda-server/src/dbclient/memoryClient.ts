@@ -25,10 +25,10 @@ export default class storageClient {
   // .map使って書き直せる説
   get(tuple: Tuple): ResponseTuple {
     let i: number;
-    for (i = this.tupleSpace.length; i > 0; i--) {
-      let result = this.isMuch(this.tupleSpace[i - 1], tuple);
+    for (const t of this.tupleSpace) {
+      let result = this.isMuch(t._payload, tuple);
       if (result.isMuched) {
-        let resData: ResponseTuple = Object.assign(this.tupleSpace[i - 1], {
+        let resData: ResponseTuple = Object.assign(t, {
           _isMuched: true,
         });
         return resData;
@@ -53,7 +53,7 @@ export default class storageClient {
       _payload: writeTuple,
       _id: this.tupleSpace.length,
     };
-    this.tupleSpace.push(insertData);
+    this.tupleSpace.unshift(insertData);
     return insertData;
   }
   //update() {}
@@ -64,8 +64,12 @@ export default class storageClient {
   isMuch(targetTuple: Tuple, searchTuple: Tuple): IsMuchResponse {
     for (let operationKey in searchTuple) {
       if (!targetTuple[operationKey]) {
+        console.log("1stif");
+        console.log(operationKey);
+        console.log("target", targetTuple);
         return { isMuched: false, res: null };
       } else if (targetTuple[operationKey] != searchTuple[operationKey]) {
+        console.log("2ndif");
         return { isMuched: false, res: null };
       }
     }
