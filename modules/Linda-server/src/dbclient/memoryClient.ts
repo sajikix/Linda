@@ -64,12 +64,8 @@ export default class storageClient {
   isMuch(targetTuple: Tuple, searchTuple: Tuple): IsMuchResponse {
     for (let operationKey in searchTuple) {
       if (!targetTuple[operationKey]) {
-        console.log("1stif");
-        console.log(operationKey);
-        console.log("target", targetTuple);
         return { isMuched: false, res: null };
       } else if (targetTuple[operationKey] != searchTuple[operationKey]) {
-        console.log("2ndif");
         return { isMuched: false, res: null };
       }
     }
