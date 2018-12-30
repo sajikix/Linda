@@ -2406,9 +2406,9 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ "../Linda-client/dist/lindaClient.js":
+/***/ "../linda-client-async/dist/index.js":
 /*!*******************************************!*\
-  !*** ../Linda-client/dist/lindaClient.js ***!
+  !*** ../linda-client-async/dist/index.js ***!
   \*******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -2416,43 +2416,140 @@ process.umask = function() { return 0; };
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var io = __webpack_require__(/*! socket.io-client */ "../Linda-client/node_modules/socket.io-client/lib/index.js");
+var lindaClient_1 = __webpack_require__(/*! ./lindaClient */ "../linda-client-async/dist/lindaClient.js");
+exports.default = lindaClient_1.default;
+
+
+/***/ }),
+
+/***/ "../linda-client-async/dist/lindaClient.js":
+/*!*************************************************!*\
+  !*** ../linda-client-async/dist/lindaClient.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var io = __webpack_require__(/*! socket.io-client */ "../linda-client-async/node_modules/socket.io-client/lib/index.js");
 var LindaClient = /** @class */ (function () {
     function LindaClient() {
     }
-    LindaClient.prototype.connect = function (url, callback) {
-        if (this.validateURL(url)) {
-            //if (true) {
-            var urlArray = url.split("/");
-            this.socket = io(urlArray[0] + "//" + urlArray[2]);
-            this.tupleSpaceName = urlArray[3];
-            this.socket.emit("_join_tuplespace", { tsName: this.tupleSpaceName });
-            callback();
-        }
-        else {
-            throw "cannot parse URL";
-        }
-    };
-    LindaClient.prototype.read = function (tuple, callback) {
-        var readData = { tsName: this.tupleSpaceName, payload: tuple };
-        this.socket.emit("_read_operation", readData);
-        this.socket.on("_read_response", function (resData) {
-            callback(resData);
+    LindaClient.prototype.connect = function (url) {
+        return __awaiter(this, void 0, void 0, function () {
+            var urlArray, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, this.validateURL(url)];
+                    case 1:
+                        if (!_b.sent()) return [3 /*break*/, 4];
+                        urlArray = url.split("/");
+                        _a = this;
+                        return [4 /*yield*/, io(urlArray[0] + "//" + urlArray[2])];
+                    case 2:
+                        _a.socket = _b.sent();
+                        this.tupleSpaceName = urlArray[3];
+                        return [4 /*yield*/, this.socket.emit("_join_tuplespace", {
+                                tsName: this.tupleSpaceName,
+                            })];
+                    case 3:
+                        _b.sent();
+                        return [3 /*break*/, 5];
+                    case 4: throw "cannot parse URL";
+                    case 5: return [2 /*return*/];
+                }
+            });
         });
     };
-    LindaClient.prototype.write = function (tuple, callback) {
-        var writeData = { tsName: this.tupleSpaceName, payload: tuple };
-        this.socket.on("_write_response", function (resData) {
-            callback(resData);
+    LindaClient.prototype.read = function (tuple) {
+        return __awaiter(this, void 0, void 0, function () {
+            var readData;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        readData = { tsName: this.tupleSpaceName, payload: tuple };
+                        this.socket.on("_read_response", function (resData) {
+                            return resData;
+                        });
+                        return [4 /*yield*/, this.socket.emit("_read_operation", readData)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
         });
-        this.socket.emit("_write_operation", writeData);
     };
-    LindaClient.prototype.take = function (tuple, callback) {
-        var takeData = { tsName: this.tupleSpaceName, payload: tuple };
-        this.socket.on("_take_response", function (resData) {
-            callback(resData);
+    LindaClient.prototype.write = function (tuple) {
+        return __awaiter(this, void 0, void 0, function () {
+            var writeData;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        writeData = { tsName: this.tupleSpaceName, payload: tuple };
+                        this.socket.on("_write_response", function (resData) {
+                            return resData;
+                        });
+                        return [4 /*yield*/, this.socket.emit("_write_operation", writeData)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
         });
-        this.socket.emit("_take_operation", takeData);
+    };
+    LindaClient.prototype.take = function (tuple) {
+        return __awaiter(this, void 0, void 0, function () {
+            var takeData;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        takeData = { tsName: this.tupleSpaceName, payload: tuple };
+                        this.socket.on("_take_response", function (resData) {
+                            return resData;
+                        });
+                        return [4 /*yield*/, this.socket.emit("_take_operation", takeData)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     LindaClient.prototype.watch = function (tuple, callback) {
         var watchData = { tsName: this.tupleSpaceName, payload: tuple };
@@ -2465,9 +2562,14 @@ var LindaClient = /** @class */ (function () {
         this.socket.on("disconnect", callback);
     };
     LindaClient.prototype.validateURL = function (url) {
-        var regex = /^(http|https):\/\/([\w-]+\.)+([\w-]|:)+\/[\w-]+/;
-        var regex2 = /^(http|https):\/\/localhost:[0-9]+\/[\w-]+/;
-        return regex.test(url) || regex2.test(url);
+        return __awaiter(this, void 0, void 0, function () {
+            var regex, regex2;
+            return __generator(this, function (_a) {
+                regex = /^(http|https):\/\/([\w-]+\.)+([\w-]|:)+\/[\w-]+/;
+                regex2 = /^(http|https):\/\/localhost:[0-9]+\/[\w-]+/;
+                return [2 /*return*/, regex.test(url) || regex2.test(url)];
+            });
+        });
     };
     return LindaClient;
 }());
@@ -2476,10 +2578,10 @@ exports.default = LindaClient;
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/after/index.js":
-/*!***************************************************!*\
-  !*** ../Linda-client/node_modules/after/index.js ***!
-  \***************************************************/
+/***/ "../linda-client-async/node_modules/after/index.js":
+/*!*********************************************************!*\
+  !*** ../linda-client-async/node_modules/after/index.js ***!
+  \*********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -2515,10 +2617,10 @@ function noop() {}
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/arraybuffer.slice/index.js":
-/*!***************************************************************!*\
-  !*** ../Linda-client/node_modules/arraybuffer.slice/index.js ***!
-  \***************************************************************/
+/***/ "../linda-client-async/node_modules/arraybuffer.slice/index.js":
+/*!*********************************************************************!*\
+  !*** ../linda-client-async/node_modules/arraybuffer.slice/index.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -2555,10 +2657,10 @@ module.exports = function(arraybuffer, start, end) {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/backo2/index.js":
-/*!****************************************************!*\
-  !*** ../Linda-client/node_modules/backo2/index.js ***!
-  \****************************************************/
+/***/ "../linda-client-async/node_modules/backo2/index.js":
+/*!**********************************************************!*\
+  !*** ../linda-client-async/node_modules/backo2/index.js ***!
+  \**********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -2651,10 +2753,10 @@ Backoff.prototype.setJitter = function(jitter){
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/base64-arraybuffer/lib/base64-arraybuffer.js":
-/*!*********************************************************************************!*\
-  !*** ../Linda-client/node_modules/base64-arraybuffer/lib/base64-arraybuffer.js ***!
-  \*********************************************************************************/
+/***/ "../linda-client-async/node_modules/base64-arraybuffer/lib/base64-arraybuffer.js":
+/*!***************************************************************************************!*\
+  !*** ../linda-client-async/node_modules/base64-arraybuffer/lib/base64-arraybuffer.js ***!
+  \***************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -2729,10 +2831,10 @@ Backoff.prototype.setJitter = function(jitter){
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/blob/index.js":
-/*!**************************************************!*\
-  !*** ../Linda-client/node_modules/blob/index.js ***!
-  \**************************************************/
+/***/ "../linda-client-async/node_modules/blob/index.js":
+/*!********************************************************!*\
+  !*** ../linda-client-async/node_modules/blob/index.js ***!
+  \********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2837,10 +2939,10 @@ module.exports = (function() {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/component-bind/index.js":
-/*!************************************************************!*\
-  !*** ../Linda-client/node_modules/component-bind/index.js ***!
-  \************************************************************/
+/***/ "../linda-client-async/node_modules/component-bind/index.js":
+/*!******************************************************************!*\
+  !*** ../linda-client-async/node_modules/component-bind/index.js ***!
+  \******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -2871,10 +2973,10 @@ module.exports = function(obj, fn){
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/component-emitter/index.js":
-/*!***************************************************************!*\
-  !*** ../Linda-client/node_modules/component-emitter/index.js ***!
-  \***************************************************************/
+/***/ "../linda-client-async/node_modules/component-emitter/index.js":
+/*!*********************************************************************!*\
+  !*** ../linda-client-async/node_modules/component-emitter/index.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3045,10 +3147,10 @@ Emitter.prototype.hasListeners = function(event){
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/component-inherit/index.js":
-/*!***************************************************************!*\
-  !*** ../Linda-client/node_modules/component-inherit/index.js ***!
-  \***************************************************************/
+/***/ "../linda-client-async/node_modules/component-inherit/index.js":
+/*!*********************************************************************!*\
+  !*** ../linda-client-async/node_modules/component-inherit/index.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -3062,15 +3164,458 @@ module.exports = function(a, b){
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/engine.io-client/lib/index.js":
-/*!******************************************************************!*\
-  !*** ../Linda-client/node_modules/engine.io-client/lib/index.js ***!
-  \******************************************************************/
+/***/ "../linda-client-async/node_modules/debug/src/browser.js":
+/*!***************************************************************!*\
+  !*** ../linda-client-async/node_modules/debug/src/browser.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * This is the web browser implementation of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = __webpack_require__(/*! ./debug */ "../linda-client-async/node_modules/debug/src/debug.js");
+exports.log = log;
+exports.formatArgs = formatArgs;
+exports.save = save;
+exports.load = load;
+exports.useColors = useColors;
+exports.storage = 'undefined' != typeof chrome
+               && 'undefined' != typeof chrome.storage
+                  ? chrome.storage.local
+                  : localstorage();
+
+/**
+ * Colors.
+ */
+
+exports.colors = [
+  '#0000CC', '#0000FF', '#0033CC', '#0033FF', '#0066CC', '#0066FF', '#0099CC',
+  '#0099FF', '#00CC00', '#00CC33', '#00CC66', '#00CC99', '#00CCCC', '#00CCFF',
+  '#3300CC', '#3300FF', '#3333CC', '#3333FF', '#3366CC', '#3366FF', '#3399CC',
+  '#3399FF', '#33CC00', '#33CC33', '#33CC66', '#33CC99', '#33CCCC', '#33CCFF',
+  '#6600CC', '#6600FF', '#6633CC', '#6633FF', '#66CC00', '#66CC33', '#9900CC',
+  '#9900FF', '#9933CC', '#9933FF', '#99CC00', '#99CC33', '#CC0000', '#CC0033',
+  '#CC0066', '#CC0099', '#CC00CC', '#CC00FF', '#CC3300', '#CC3333', '#CC3366',
+  '#CC3399', '#CC33CC', '#CC33FF', '#CC6600', '#CC6633', '#CC9900', '#CC9933',
+  '#CCCC00', '#CCCC33', '#FF0000', '#FF0033', '#FF0066', '#FF0099', '#FF00CC',
+  '#FF00FF', '#FF3300', '#FF3333', '#FF3366', '#FF3399', '#FF33CC', '#FF33FF',
+  '#FF6600', '#FF6633', '#FF9900', '#FF9933', '#FFCC00', '#FFCC33'
+];
+
+/**
+ * Currently only WebKit-based Web Inspectors, Firefox >= v31,
+ * and the Firebug extension (any Firefox version) are known
+ * to support "%c" CSS customizations.
+ *
+ * TODO: add a `localStorage` variable to explicitly enable/disable colors
+ */
+
+function useColors() {
+  // NB: In an Electron preload script, document will be defined but not fully
+  // initialized. Since we know we're in Chrome, we'll just detect this case
+  // explicitly
+  if (typeof window !== 'undefined' && window.process && window.process.type === 'renderer') {
+    return true;
+  }
+
+  // Internet Explorer and Edge do not support colors.
+  if (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)) {
+    return false;
+  }
+
+  // is webkit? http://stackoverflow.com/a/16459606/376773
+  // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
+  return (typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
+    // is firebug? http://stackoverflow.com/a/398120/376773
+    (typeof window !== 'undefined' && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
+    // is firefox >= v31?
+    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
+    // double check webkit in userAgent just in case we are in a worker
+    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
+}
+
+/**
+ * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+ */
+
+exports.formatters.j = function(v) {
+  try {
+    return JSON.stringify(v);
+  } catch (err) {
+    return '[UnexpectedJSONParseError]: ' + err.message;
+  }
+};
+
+
+/**
+ * Colorize log arguments if enabled.
+ *
+ * @api public
+ */
+
+function formatArgs(args) {
+  var useColors = this.useColors;
+
+  args[0] = (useColors ? '%c' : '')
+    + this.namespace
+    + (useColors ? ' %c' : ' ')
+    + args[0]
+    + (useColors ? '%c ' : ' ')
+    + '+' + exports.humanize(this.diff);
+
+  if (!useColors) return;
+
+  var c = 'color: ' + this.color;
+  args.splice(1, 0, c, 'color: inherit')
+
+  // the final "%c" is somewhat tricky, because there could be other
+  // arguments passed either before or after the %c, so we need to
+  // figure out the correct index to insert the CSS into
+  var index = 0;
+  var lastC = 0;
+  args[0].replace(/%[a-zA-Z%]/g, function(match) {
+    if ('%%' === match) return;
+    index++;
+    if ('%c' === match) {
+      // we only are interested in the *last* %c
+      // (the user may have provided their own)
+      lastC = index;
+    }
+  });
+
+  args.splice(lastC, 0, c);
+}
+
+/**
+ * Invokes `console.log()` when available.
+ * No-op when `console.log` is not a "function".
+ *
+ * @api public
+ */
+
+function log() {
+  // this hackery is required for IE8/9, where
+  // the `console.log` function doesn't have 'apply'
+  return 'object' === typeof console
+    && console.log
+    && Function.prototype.apply.call(console.log, console, arguments);
+}
+
+/**
+ * Save `namespaces`.
+ *
+ * @param {String} namespaces
+ * @api private
+ */
+
+function save(namespaces) {
+  try {
+    if (null == namespaces) {
+      exports.storage.removeItem('debug');
+    } else {
+      exports.storage.debug = namespaces;
+    }
+  } catch(e) {}
+}
+
+/**
+ * Load `namespaces`.
+ *
+ * @return {String} returns the previously persisted debug modes
+ * @api private
+ */
+
+function load() {
+  var r;
+  try {
+    r = exports.storage.debug;
+  } catch(e) {}
+
+  // If debug isn't set in LS, and we're in Electron, try to load $DEBUG
+  if (!r && typeof process !== 'undefined' && 'env' in process) {
+    r = process.env.DEBUG;
+  }
+
+  return r;
+}
+
+/**
+ * Enable namespaces listed in `localStorage.debug` initially.
+ */
+
+exports.enable(load());
+
+/**
+ * Localstorage attempts to return the localstorage.
+ *
+ * This is necessary because safari throws
+ * when a user disables cookies/localstorage
+ * and you attempt to access it.
+ *
+ * @return {LocalStorage}
+ * @api private
+ */
+
+function localstorage() {
+  try {
+    return window.localStorage;
+  } catch (e) {}
+}
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../../.nodebrew/node/v8.9.1/lib/node_modules/webpack/node_modules/process/browser.js */ "../../../../.nodebrew/node/v8.9.1/lib/node_modules/webpack/node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "../linda-client-async/node_modules/debug/src/debug.js":
+/*!*************************************************************!*\
+  !*** ../linda-client-async/node_modules/debug/src/debug.js ***!
+  \*************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-module.exports = __webpack_require__(/*! ./socket */ "../Linda-client/node_modules/engine.io-client/lib/socket.js");
+/**
+ * This is the common logic for both the Node.js and web browser
+ * implementations of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = createDebug.debug = createDebug['default'] = createDebug;
+exports.coerce = coerce;
+exports.disable = disable;
+exports.enable = enable;
+exports.enabled = enabled;
+exports.humanize = __webpack_require__(/*! ms */ "../linda-client-async/node_modules/ms/index.js");
+
+/**
+ * Active `debug` instances.
+ */
+exports.instances = [];
+
+/**
+ * The currently active debug mode names, and names to skip.
+ */
+
+exports.names = [];
+exports.skips = [];
+
+/**
+ * Map of special "%n" handling functions, for the debug "format" argument.
+ *
+ * Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
+ */
+
+exports.formatters = {};
+
+/**
+ * Select a color.
+ * @param {String} namespace
+ * @return {Number}
+ * @api private
+ */
+
+function selectColor(namespace) {
+  var hash = 0, i;
+
+  for (i in namespace) {
+    hash  = ((hash << 5) - hash) + namespace.charCodeAt(i);
+    hash |= 0; // Convert to 32bit integer
+  }
+
+  return exports.colors[Math.abs(hash) % exports.colors.length];
+}
+
+/**
+ * Create a debugger with the given `namespace`.
+ *
+ * @param {String} namespace
+ * @return {Function}
+ * @api public
+ */
+
+function createDebug(namespace) {
+
+  var prevTime;
+
+  function debug() {
+    // disabled?
+    if (!debug.enabled) return;
+
+    var self = debug;
+
+    // set `diff` timestamp
+    var curr = +new Date();
+    var ms = curr - (prevTime || curr);
+    self.diff = ms;
+    self.prev = prevTime;
+    self.curr = curr;
+    prevTime = curr;
+
+    // turn the `arguments` into a proper Array
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+
+    args[0] = exports.coerce(args[0]);
+
+    if ('string' !== typeof args[0]) {
+      // anything else let's inspect with %O
+      args.unshift('%O');
+    }
+
+    // apply any `formatters` transformations
+    var index = 0;
+    args[0] = args[0].replace(/%([a-zA-Z%])/g, function(match, format) {
+      // if we encounter an escaped % then don't increase the array index
+      if (match === '%%') return match;
+      index++;
+      var formatter = exports.formatters[format];
+      if ('function' === typeof formatter) {
+        var val = args[index];
+        match = formatter.call(self, val);
+
+        // now we need to remove `args[index]` since it's inlined in the `format`
+        args.splice(index, 1);
+        index--;
+      }
+      return match;
+    });
+
+    // apply env-specific formatting (colors, etc.)
+    exports.formatArgs.call(self, args);
+
+    var logFn = debug.log || exports.log || console.log.bind(console);
+    logFn.apply(self, args);
+  }
+
+  debug.namespace = namespace;
+  debug.enabled = exports.enabled(namespace);
+  debug.useColors = exports.useColors();
+  debug.color = selectColor(namespace);
+  debug.destroy = destroy;
+
+  // env-specific initialization logic for debug instances
+  if ('function' === typeof exports.init) {
+    exports.init(debug);
+  }
+
+  exports.instances.push(debug);
+
+  return debug;
+}
+
+function destroy () {
+  var index = exports.instances.indexOf(this);
+  if (index !== -1) {
+    exports.instances.splice(index, 1);
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/**
+ * Enables a debug mode by namespaces. This can include modes
+ * separated by a colon and wildcards.
+ *
+ * @param {String} namespaces
+ * @api public
+ */
+
+function enable(namespaces) {
+  exports.save(namespaces);
+
+  exports.names = [];
+  exports.skips = [];
+
+  var i;
+  var split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
+  var len = split.length;
+
+  for (i = 0; i < len; i++) {
+    if (!split[i]) continue; // ignore empty strings
+    namespaces = split[i].replace(/\*/g, '.*?');
+    if (namespaces[0] === '-') {
+      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+    } else {
+      exports.names.push(new RegExp('^' + namespaces + '$'));
+    }
+  }
+
+  for (i = 0; i < exports.instances.length; i++) {
+    var instance = exports.instances[i];
+    instance.enabled = exports.enabled(instance.namespace);
+  }
+}
+
+/**
+ * Disable debug output.
+ *
+ * @api public
+ */
+
+function disable() {
+  exports.enable('');
+}
+
+/**
+ * Returns true if the given mode name is enabled, false otherwise.
+ *
+ * @param {String} name
+ * @return {Boolean}
+ * @api public
+ */
+
+function enabled(name) {
+  if (name[name.length - 1] === '*') {
+    return true;
+  }
+  var i, len;
+  for (i = 0, len = exports.skips.length; i < len; i++) {
+    if (exports.skips[i].test(name)) {
+      return false;
+    }
+  }
+  for (i = 0, len = exports.names.length; i < len; i++) {
+    if (exports.names[i].test(name)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Coerce `val`.
+ *
+ * @param {Mixed} val
+ * @return {Mixed}
+ * @api private
+ */
+
+function coerce(val) {
+  if (val instanceof Error) return val.stack || val.message;
+  return val;
+}
+
+
+/***/ }),
+
+/***/ "../linda-client-async/node_modules/engine.io-client/lib/index.js":
+/*!************************************************************************!*\
+  !*** ../linda-client-async/node_modules/engine.io-client/lib/index.js ***!
+  \************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+module.exports = __webpack_require__(/*! ./socket */ "../linda-client-async/node_modules/engine.io-client/lib/socket.js");
 
 /**
  * Exports parser
@@ -3078,15 +3623,15 @@ module.exports = __webpack_require__(/*! ./socket */ "../Linda-client/node_modul
  * @api public
  *
  */
-module.exports.parser = __webpack_require__(/*! engine.io-parser */ "../Linda-client/node_modules/engine.io-parser/lib/browser.js");
+module.exports.parser = __webpack_require__(/*! engine.io-parser */ "../linda-client-async/node_modules/engine.io-parser/lib/browser.js");
 
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/engine.io-client/lib/socket.js":
-/*!*******************************************************************!*\
-  !*** ../Linda-client/node_modules/engine.io-client/lib/socket.js ***!
-  \*******************************************************************/
+/***/ "../linda-client-async/node_modules/engine.io-client/lib/socket.js":
+/*!*************************************************************************!*\
+  !*** ../linda-client-async/node_modules/engine.io-client/lib/socket.js ***!
+  \*************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3094,13 +3639,13 @@ module.exports.parser = __webpack_require__(/*! engine.io-parser */ "../Linda-cl
  * Module dependencies.
  */
 
-var transports = __webpack_require__(/*! ./transports/index */ "../Linda-client/node_modules/engine.io-client/lib/transports/index.js");
-var Emitter = __webpack_require__(/*! component-emitter */ "../Linda-client/node_modules/component-emitter/index.js");
-var debug = __webpack_require__(/*! debug */ "../Linda-client/node_modules/engine.io-client/node_modules/debug/src/browser.js")('engine.io-client:socket');
-var index = __webpack_require__(/*! indexof */ "../Linda-client/node_modules/indexof/index.js");
-var parser = __webpack_require__(/*! engine.io-parser */ "../Linda-client/node_modules/engine.io-parser/lib/browser.js");
-var parseuri = __webpack_require__(/*! parseuri */ "../Linda-client/node_modules/parseuri/index.js");
-var parseqs = __webpack_require__(/*! parseqs */ "../Linda-client/node_modules/parseqs/index.js");
+var transports = __webpack_require__(/*! ./transports/index */ "../linda-client-async/node_modules/engine.io-client/lib/transports/index.js");
+var Emitter = __webpack_require__(/*! component-emitter */ "../linda-client-async/node_modules/component-emitter/index.js");
+var debug = __webpack_require__(/*! debug */ "../linda-client-async/node_modules/debug/src/browser.js")('engine.io-client:socket');
+var index = __webpack_require__(/*! indexof */ "../linda-client-async/node_modules/indexof/index.js");
+var parser = __webpack_require__(/*! engine.io-parser */ "../linda-client-async/node_modules/engine.io-parser/lib/browser.js");
+var parseuri = __webpack_require__(/*! parseuri */ "../linda-client-async/node_modules/parseuri/index.js");
+var parseqs = __webpack_require__(/*! parseqs */ "../linda-client-async/node_modules/parseqs/index.js");
 
 /**
  * Module exports.
@@ -3233,9 +3778,9 @@ Socket.protocol = parser.protocol; // this is an int
  */
 
 Socket.Socket = Socket;
-Socket.Transport = __webpack_require__(/*! ./transport */ "../Linda-client/node_modules/engine.io-client/lib/transport.js");
-Socket.transports = __webpack_require__(/*! ./transports/index */ "../Linda-client/node_modules/engine.io-client/lib/transports/index.js");
-Socket.parser = __webpack_require__(/*! engine.io-parser */ "../Linda-client/node_modules/engine.io-parser/lib/browser.js");
+Socket.Transport = __webpack_require__(/*! ./transport */ "../linda-client-async/node_modules/engine.io-client/lib/transport.js");
+Socket.transports = __webpack_require__(/*! ./transports/index */ "../linda-client-async/node_modules/engine.io-client/lib/transports/index.js");
+Socket.parser = __webpack_require__(/*! engine.io-parser */ "../linda-client-async/node_modules/engine.io-parser/lib/browser.js");
 
 /**
  * Creates transport of the given type.
@@ -3838,10 +4383,10 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/engine.io-client/lib/transport.js":
-/*!**********************************************************************!*\
-  !*** ../Linda-client/node_modules/engine.io-client/lib/transport.js ***!
-  \**********************************************************************/
+/***/ "../linda-client-async/node_modules/engine.io-client/lib/transport.js":
+/*!****************************************************************************!*\
+  !*** ../linda-client-async/node_modules/engine.io-client/lib/transport.js ***!
+  \****************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3849,8 +4394,8 @@ Socket.prototype.filterUpgrades = function (upgrades) {
  * Module dependencies.
  */
 
-var parser = __webpack_require__(/*! engine.io-parser */ "../Linda-client/node_modules/engine.io-parser/lib/browser.js");
-var Emitter = __webpack_require__(/*! component-emitter */ "../Linda-client/node_modules/component-emitter/index.js");
+var parser = __webpack_require__(/*! engine.io-parser */ "../linda-client-async/node_modules/engine.io-parser/lib/browser.js");
+var Emitter = __webpack_require__(/*! component-emitter */ "../linda-client-async/node_modules/component-emitter/index.js");
 
 /**
  * Module exports.
@@ -4006,10 +4551,10 @@ Transport.prototype.onClose = function () {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/engine.io-client/lib/transports/index.js":
-/*!*****************************************************************************!*\
-  !*** ../Linda-client/node_modules/engine.io-client/lib/transports/index.js ***!
-  \*****************************************************************************/
+/***/ "../linda-client-async/node_modules/engine.io-client/lib/transports/index.js":
+/*!***********************************************************************************!*\
+  !*** ../linda-client-async/node_modules/engine.io-client/lib/transports/index.js ***!
+  \***********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4017,10 +4562,10 @@ Transport.prototype.onClose = function () {
  * Module dependencies
  */
 
-var XMLHttpRequest = __webpack_require__(/*! xmlhttprequest-ssl */ "../Linda-client/node_modules/engine.io-client/lib/xmlhttprequest.js");
-var XHR = __webpack_require__(/*! ./polling-xhr */ "../Linda-client/node_modules/engine.io-client/lib/transports/polling-xhr.js");
-var JSONP = __webpack_require__(/*! ./polling-jsonp */ "../Linda-client/node_modules/engine.io-client/lib/transports/polling-jsonp.js");
-var websocket = __webpack_require__(/*! ./websocket */ "../Linda-client/node_modules/engine.io-client/lib/transports/websocket.js");
+var XMLHttpRequest = __webpack_require__(/*! xmlhttprequest-ssl */ "../linda-client-async/node_modules/engine.io-client/lib/xmlhttprequest.js");
+var XHR = __webpack_require__(/*! ./polling-xhr */ "../linda-client-async/node_modules/engine.io-client/lib/transports/polling-xhr.js");
+var JSONP = __webpack_require__(/*! ./polling-jsonp */ "../linda-client-async/node_modules/engine.io-client/lib/transports/polling-jsonp.js");
+var websocket = __webpack_require__(/*! ./websocket */ "../linda-client-async/node_modules/engine.io-client/lib/transports/websocket.js");
 
 /**
  * Export transports.
@@ -4071,10 +4616,10 @@ function polling (opts) {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/engine.io-client/lib/transports/polling-jsonp.js":
-/*!*************************************************************************************!*\
-  !*** ../Linda-client/node_modules/engine.io-client/lib/transports/polling-jsonp.js ***!
-  \*************************************************************************************/
+/***/ "../linda-client-async/node_modules/engine.io-client/lib/transports/polling-jsonp.js":
+/*!*******************************************************************************************!*\
+  !*** ../linda-client-async/node_modules/engine.io-client/lib/transports/polling-jsonp.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4083,8 +4628,8 @@ function polling (opts) {
  * Module requirements.
  */
 
-var Polling = __webpack_require__(/*! ./polling */ "../Linda-client/node_modules/engine.io-client/lib/transports/polling.js");
-var inherit = __webpack_require__(/*! component-inherit */ "../Linda-client/node_modules/component-inherit/index.js");
+var Polling = __webpack_require__(/*! ./polling */ "../linda-client-async/node_modules/engine.io-client/lib/transports/polling.js");
+var inherit = __webpack_require__(/*! component-inherit */ "../linda-client-async/node_modules/component-inherit/index.js");
 
 /**
  * Module exports.
@@ -4314,10 +4859,10 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/engine.io-client/lib/transports/polling-xhr.js":
-/*!***********************************************************************************!*\
-  !*** ../Linda-client/node_modules/engine.io-client/lib/transports/polling-xhr.js ***!
-  \***********************************************************************************/
+/***/ "../linda-client-async/node_modules/engine.io-client/lib/transports/polling-xhr.js":
+/*!*****************************************************************************************!*\
+  !*** ../linda-client-async/node_modules/engine.io-client/lib/transports/polling-xhr.js ***!
+  \*****************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4325,11 +4870,11 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
  * Module requirements.
  */
 
-var XMLHttpRequest = __webpack_require__(/*! xmlhttprequest-ssl */ "../Linda-client/node_modules/engine.io-client/lib/xmlhttprequest.js");
-var Polling = __webpack_require__(/*! ./polling */ "../Linda-client/node_modules/engine.io-client/lib/transports/polling.js");
-var Emitter = __webpack_require__(/*! component-emitter */ "../Linda-client/node_modules/component-emitter/index.js");
-var inherit = __webpack_require__(/*! component-inherit */ "../Linda-client/node_modules/component-inherit/index.js");
-var debug = __webpack_require__(/*! debug */ "../Linda-client/node_modules/engine.io-client/node_modules/debug/src/browser.js")('engine.io-client:polling-xhr');
+var XMLHttpRequest = __webpack_require__(/*! xmlhttprequest-ssl */ "../linda-client-async/node_modules/engine.io-client/lib/xmlhttprequest.js");
+var Polling = __webpack_require__(/*! ./polling */ "../linda-client-async/node_modules/engine.io-client/lib/transports/polling.js");
+var Emitter = __webpack_require__(/*! component-emitter */ "../linda-client-async/node_modules/component-emitter/index.js");
+var inherit = __webpack_require__(/*! component-inherit */ "../linda-client-async/node_modules/component-inherit/index.js");
+var debug = __webpack_require__(/*! debug */ "../linda-client-async/node_modules/debug/src/browser.js")('engine.io-client:polling-xhr');
 
 /**
  * Module exports.
@@ -4738,10 +5283,10 @@ function unloadHandler () {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/engine.io-client/lib/transports/polling.js":
-/*!*******************************************************************************!*\
-  !*** ../Linda-client/node_modules/engine.io-client/lib/transports/polling.js ***!
-  \*******************************************************************************/
+/***/ "../linda-client-async/node_modules/engine.io-client/lib/transports/polling.js":
+/*!*************************************************************************************!*\
+  !*** ../linda-client-async/node_modules/engine.io-client/lib/transports/polling.js ***!
+  \*************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4749,12 +5294,12 @@ function unloadHandler () {
  * Module dependencies.
  */
 
-var Transport = __webpack_require__(/*! ../transport */ "../Linda-client/node_modules/engine.io-client/lib/transport.js");
-var parseqs = __webpack_require__(/*! parseqs */ "../Linda-client/node_modules/parseqs/index.js");
-var parser = __webpack_require__(/*! engine.io-parser */ "../Linda-client/node_modules/engine.io-parser/lib/browser.js");
-var inherit = __webpack_require__(/*! component-inherit */ "../Linda-client/node_modules/component-inherit/index.js");
-var yeast = __webpack_require__(/*! yeast */ "../Linda-client/node_modules/yeast/index.js");
-var debug = __webpack_require__(/*! debug */ "../Linda-client/node_modules/engine.io-client/node_modules/debug/src/browser.js")('engine.io-client:polling');
+var Transport = __webpack_require__(/*! ../transport */ "../linda-client-async/node_modules/engine.io-client/lib/transport.js");
+var parseqs = __webpack_require__(/*! parseqs */ "../linda-client-async/node_modules/parseqs/index.js");
+var parser = __webpack_require__(/*! engine.io-parser */ "../linda-client-async/node_modules/engine.io-parser/lib/browser.js");
+var inherit = __webpack_require__(/*! component-inherit */ "../linda-client-async/node_modules/component-inherit/index.js");
+var yeast = __webpack_require__(/*! yeast */ "../linda-client-async/node_modules/yeast/index.js");
+var debug = __webpack_require__(/*! debug */ "../linda-client-async/node_modules/debug/src/browser.js")('engine.io-client:polling');
 
 /**
  * Module exports.
@@ -4767,7 +5312,7 @@ module.exports = Polling;
  */
 
 var hasXHR2 = (function () {
-  var XMLHttpRequest = __webpack_require__(/*! xmlhttprequest-ssl */ "../Linda-client/node_modules/engine.io-client/lib/xmlhttprequest.js");
+  var XMLHttpRequest = __webpack_require__(/*! xmlhttprequest-ssl */ "../linda-client-async/node_modules/engine.io-client/lib/xmlhttprequest.js");
   var xhr = new XMLHttpRequest({ xdomain: false });
   return null != xhr.responseType;
 })();
@@ -4994,10 +5539,10 @@ Polling.prototype.uri = function () {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/engine.io-client/lib/transports/websocket.js":
-/*!*********************************************************************************!*\
-  !*** ../Linda-client/node_modules/engine.io-client/lib/transports/websocket.js ***!
-  \*********************************************************************************/
+/***/ "../linda-client-async/node_modules/engine.io-client/lib/transports/websocket.js":
+/*!***************************************************************************************!*\
+  !*** ../linda-client-async/node_modules/engine.io-client/lib/transports/websocket.js ***!
+  \***************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5005,12 +5550,12 @@ Polling.prototype.uri = function () {
  * Module dependencies.
  */
 
-var Transport = __webpack_require__(/*! ../transport */ "../Linda-client/node_modules/engine.io-client/lib/transport.js");
-var parser = __webpack_require__(/*! engine.io-parser */ "../Linda-client/node_modules/engine.io-parser/lib/browser.js");
-var parseqs = __webpack_require__(/*! parseqs */ "../Linda-client/node_modules/parseqs/index.js");
-var inherit = __webpack_require__(/*! component-inherit */ "../Linda-client/node_modules/component-inherit/index.js");
-var yeast = __webpack_require__(/*! yeast */ "../Linda-client/node_modules/yeast/index.js");
-var debug = __webpack_require__(/*! debug */ "../Linda-client/node_modules/engine.io-client/node_modules/debug/src/browser.js")('engine.io-client:websocket');
+var Transport = __webpack_require__(/*! ../transport */ "../linda-client-async/node_modules/engine.io-client/lib/transport.js");
+var parser = __webpack_require__(/*! engine.io-parser */ "../linda-client-async/node_modules/engine.io-parser/lib/browser.js");
+var parseqs = __webpack_require__(/*! parseqs */ "../linda-client-async/node_modules/parseqs/index.js");
+var inherit = __webpack_require__(/*! component-inherit */ "../linda-client-async/node_modules/component-inherit/index.js");
+var yeast = __webpack_require__(/*! yeast */ "../linda-client-async/node_modules/yeast/index.js");
+var debug = __webpack_require__(/*! debug */ "../linda-client-async/node_modules/debug/src/browser.js")('engine.io-client:websocket');
 var BrowserWebSocket = global.WebSocket || global.MozWebSocket;
 var NodeWebSocket;
 if (typeof window === 'undefined') {
@@ -5292,16 +5837,16 @@ WS.prototype.check = function () {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/engine.io-client/lib/xmlhttprequest.js":
-/*!***************************************************************************!*\
-  !*** ../Linda-client/node_modules/engine.io-client/lib/xmlhttprequest.js ***!
-  \***************************************************************************/
+/***/ "../linda-client-async/node_modules/engine.io-client/lib/xmlhttprequest.js":
+/*!*********************************************************************************!*\
+  !*** ../linda-client-async/node_modules/engine.io-client/lib/xmlhttprequest.js ***!
+  \*********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {// browser shim for xmlhttprequest module
 
-var hasCORS = __webpack_require__(/*! has-cors */ "../Linda-client/node_modules/has-cors/index.js");
+var hasCORS = __webpack_require__(/*! has-cors */ "../linda-client-async/node_modules/has-cors/index.js");
 
 module.exports = function (opts) {
   var xdomain = opts.xdomain;
@@ -5341,453 +5886,10 @@ module.exports = function (opts) {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/engine.io-client/node_modules/debug/src/browser.js":
-/*!***************************************************************************************!*\
-  !*** ../Linda-client/node_modules/engine.io-client/node_modules/debug/src/browser.js ***!
-  \***************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * This is the web browser implementation of `debug()`.
- *
- * Expose `debug()` as the module.
- */
-
-exports = module.exports = __webpack_require__(/*! ./debug */ "../Linda-client/node_modules/engine.io-client/node_modules/debug/src/debug.js");
-exports.log = log;
-exports.formatArgs = formatArgs;
-exports.save = save;
-exports.load = load;
-exports.useColors = useColors;
-exports.storage = 'undefined' != typeof chrome
-               && 'undefined' != typeof chrome.storage
-                  ? chrome.storage.local
-                  : localstorage();
-
-/**
- * Colors.
- */
-
-exports.colors = [
-  '#0000CC', '#0000FF', '#0033CC', '#0033FF', '#0066CC', '#0066FF', '#0099CC',
-  '#0099FF', '#00CC00', '#00CC33', '#00CC66', '#00CC99', '#00CCCC', '#00CCFF',
-  '#3300CC', '#3300FF', '#3333CC', '#3333FF', '#3366CC', '#3366FF', '#3399CC',
-  '#3399FF', '#33CC00', '#33CC33', '#33CC66', '#33CC99', '#33CCCC', '#33CCFF',
-  '#6600CC', '#6600FF', '#6633CC', '#6633FF', '#66CC00', '#66CC33', '#9900CC',
-  '#9900FF', '#9933CC', '#9933FF', '#99CC00', '#99CC33', '#CC0000', '#CC0033',
-  '#CC0066', '#CC0099', '#CC00CC', '#CC00FF', '#CC3300', '#CC3333', '#CC3366',
-  '#CC3399', '#CC33CC', '#CC33FF', '#CC6600', '#CC6633', '#CC9900', '#CC9933',
-  '#CCCC00', '#CCCC33', '#FF0000', '#FF0033', '#FF0066', '#FF0099', '#FF00CC',
-  '#FF00FF', '#FF3300', '#FF3333', '#FF3366', '#FF3399', '#FF33CC', '#FF33FF',
-  '#FF6600', '#FF6633', '#FF9900', '#FF9933', '#FFCC00', '#FFCC33'
-];
-
-/**
- * Currently only WebKit-based Web Inspectors, Firefox >= v31,
- * and the Firebug extension (any Firefox version) are known
- * to support "%c" CSS customizations.
- *
- * TODO: add a `localStorage` variable to explicitly enable/disable colors
- */
-
-function useColors() {
-  // NB: In an Electron preload script, document will be defined but not fully
-  // initialized. Since we know we're in Chrome, we'll just detect this case
-  // explicitly
-  if (typeof window !== 'undefined' && window.process && window.process.type === 'renderer') {
-    return true;
-  }
-
-  // Internet Explorer and Edge do not support colors.
-  if (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)) {
-    return false;
-  }
-
-  // is webkit? http://stackoverflow.com/a/16459606/376773
-  // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
-  return (typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
-    // is firebug? http://stackoverflow.com/a/398120/376773
-    (typeof window !== 'undefined' && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
-    // is firefox >= v31?
-    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
-    // double check webkit in userAgent just in case we are in a worker
-    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
-}
-
-/**
- * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
- */
-
-exports.formatters.j = function(v) {
-  try {
-    return JSON.stringify(v);
-  } catch (err) {
-    return '[UnexpectedJSONParseError]: ' + err.message;
-  }
-};
-
-
-/**
- * Colorize log arguments if enabled.
- *
- * @api public
- */
-
-function formatArgs(args) {
-  var useColors = this.useColors;
-
-  args[0] = (useColors ? '%c' : '')
-    + this.namespace
-    + (useColors ? ' %c' : ' ')
-    + args[0]
-    + (useColors ? '%c ' : ' ')
-    + '+' + exports.humanize(this.diff);
-
-  if (!useColors) return;
-
-  var c = 'color: ' + this.color;
-  args.splice(1, 0, c, 'color: inherit')
-
-  // the final "%c" is somewhat tricky, because there could be other
-  // arguments passed either before or after the %c, so we need to
-  // figure out the correct index to insert the CSS into
-  var index = 0;
-  var lastC = 0;
-  args[0].replace(/%[a-zA-Z%]/g, function(match) {
-    if ('%%' === match) return;
-    index++;
-    if ('%c' === match) {
-      // we only are interested in the *last* %c
-      // (the user may have provided their own)
-      lastC = index;
-    }
-  });
-
-  args.splice(lastC, 0, c);
-}
-
-/**
- * Invokes `console.log()` when available.
- * No-op when `console.log` is not a "function".
- *
- * @api public
- */
-
-function log() {
-  // this hackery is required for IE8/9, where
-  // the `console.log` function doesn't have 'apply'
-  return 'object' === typeof console
-    && console.log
-    && Function.prototype.apply.call(console.log, console, arguments);
-}
-
-/**
- * Save `namespaces`.
- *
- * @param {String} namespaces
- * @api private
- */
-
-function save(namespaces) {
-  try {
-    if (null == namespaces) {
-      exports.storage.removeItem('debug');
-    } else {
-      exports.storage.debug = namespaces;
-    }
-  } catch(e) {}
-}
-
-/**
- * Load `namespaces`.
- *
- * @return {String} returns the previously persisted debug modes
- * @api private
- */
-
-function load() {
-  var r;
-  try {
-    r = exports.storage.debug;
-  } catch(e) {}
-
-  // If debug isn't set in LS, and we're in Electron, try to load $DEBUG
-  if (!r && typeof process !== 'undefined' && 'env' in process) {
-    r = process.env.DEBUG;
-  }
-
-  return r;
-}
-
-/**
- * Enable namespaces listed in `localStorage.debug` initially.
- */
-
-exports.enable(load());
-
-/**
- * Localstorage attempts to return the localstorage.
- *
- * This is necessary because safari throws
- * when a user disables cookies/localstorage
- * and you attempt to access it.
- *
- * @return {LocalStorage}
- * @api private
- */
-
-function localstorage() {
-  try {
-    return window.localStorage;
-  } catch (e) {}
-}
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../../../../.nodebrew/node/v8.9.1/lib/node_modules/webpack/node_modules/process/browser.js */ "../../../../.nodebrew/node/v8.9.1/lib/node_modules/webpack/node_modules/process/browser.js")))
-
-/***/ }),
-
-/***/ "../Linda-client/node_modules/engine.io-client/node_modules/debug/src/debug.js":
-/*!*************************************************************************************!*\
-  !*** ../Linda-client/node_modules/engine.io-client/node_modules/debug/src/debug.js ***!
-  \*************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-/**
- * This is the common logic for both the Node.js and web browser
- * implementations of `debug()`.
- *
- * Expose `debug()` as the module.
- */
-
-exports = module.exports = createDebug.debug = createDebug['default'] = createDebug;
-exports.coerce = coerce;
-exports.disable = disable;
-exports.enable = enable;
-exports.enabled = enabled;
-exports.humanize = __webpack_require__(/*! ms */ "../Linda-client/node_modules/ms/index.js");
-
-/**
- * Active `debug` instances.
- */
-exports.instances = [];
-
-/**
- * The currently active debug mode names, and names to skip.
- */
-
-exports.names = [];
-exports.skips = [];
-
-/**
- * Map of special "%n" handling functions, for the debug "format" argument.
- *
- * Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
- */
-
-exports.formatters = {};
-
-/**
- * Select a color.
- * @param {String} namespace
- * @return {Number}
- * @api private
- */
-
-function selectColor(namespace) {
-  var hash = 0, i;
-
-  for (i in namespace) {
-    hash  = ((hash << 5) - hash) + namespace.charCodeAt(i);
-    hash |= 0; // Convert to 32bit integer
-  }
-
-  return exports.colors[Math.abs(hash) % exports.colors.length];
-}
-
-/**
- * Create a debugger with the given `namespace`.
- *
- * @param {String} namespace
- * @return {Function}
- * @api public
- */
-
-function createDebug(namespace) {
-
-  var prevTime;
-
-  function debug() {
-    // disabled?
-    if (!debug.enabled) return;
-
-    var self = debug;
-
-    // set `diff` timestamp
-    var curr = +new Date();
-    var ms = curr - (prevTime || curr);
-    self.diff = ms;
-    self.prev = prevTime;
-    self.curr = curr;
-    prevTime = curr;
-
-    // turn the `arguments` into a proper Array
-    var args = new Array(arguments.length);
-    for (var i = 0; i < args.length; i++) {
-      args[i] = arguments[i];
-    }
-
-    args[0] = exports.coerce(args[0]);
-
-    if ('string' !== typeof args[0]) {
-      // anything else let's inspect with %O
-      args.unshift('%O');
-    }
-
-    // apply any `formatters` transformations
-    var index = 0;
-    args[0] = args[0].replace(/%([a-zA-Z%])/g, function(match, format) {
-      // if we encounter an escaped % then don't increase the array index
-      if (match === '%%') return match;
-      index++;
-      var formatter = exports.formatters[format];
-      if ('function' === typeof formatter) {
-        var val = args[index];
-        match = formatter.call(self, val);
-
-        // now we need to remove `args[index]` since it's inlined in the `format`
-        args.splice(index, 1);
-        index--;
-      }
-      return match;
-    });
-
-    // apply env-specific formatting (colors, etc.)
-    exports.formatArgs.call(self, args);
-
-    var logFn = debug.log || exports.log || console.log.bind(console);
-    logFn.apply(self, args);
-  }
-
-  debug.namespace = namespace;
-  debug.enabled = exports.enabled(namespace);
-  debug.useColors = exports.useColors();
-  debug.color = selectColor(namespace);
-  debug.destroy = destroy;
-
-  // env-specific initialization logic for debug instances
-  if ('function' === typeof exports.init) {
-    exports.init(debug);
-  }
-
-  exports.instances.push(debug);
-
-  return debug;
-}
-
-function destroy () {
-  var index = exports.instances.indexOf(this);
-  if (index !== -1) {
-    exports.instances.splice(index, 1);
-    return true;
-  } else {
-    return false;
-  }
-}
-
-/**
- * Enables a debug mode by namespaces. This can include modes
- * separated by a colon and wildcards.
- *
- * @param {String} namespaces
- * @api public
- */
-
-function enable(namespaces) {
-  exports.save(namespaces);
-
-  exports.names = [];
-  exports.skips = [];
-
-  var i;
-  var split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
-  var len = split.length;
-
-  for (i = 0; i < len; i++) {
-    if (!split[i]) continue; // ignore empty strings
-    namespaces = split[i].replace(/\*/g, '.*?');
-    if (namespaces[0] === '-') {
-      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
-    } else {
-      exports.names.push(new RegExp('^' + namespaces + '$'));
-    }
-  }
-
-  for (i = 0; i < exports.instances.length; i++) {
-    var instance = exports.instances[i];
-    instance.enabled = exports.enabled(instance.namespace);
-  }
-}
-
-/**
- * Disable debug output.
- *
- * @api public
- */
-
-function disable() {
-  exports.enable('');
-}
-
-/**
- * Returns true if the given mode name is enabled, false otherwise.
- *
- * @param {String} name
- * @return {Boolean}
- * @api public
- */
-
-function enabled(name) {
-  if (name[name.length - 1] === '*') {
-    return true;
-  }
-  var i, len;
-  for (i = 0, len = exports.skips.length; i < len; i++) {
-    if (exports.skips[i].test(name)) {
-      return false;
-    }
-  }
-  for (i = 0, len = exports.names.length; i < len; i++) {
-    if (exports.names[i].test(name)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * Coerce `val`.
- *
- * @param {Mixed} val
- * @return {Mixed}
- * @api private
- */
-
-function coerce(val) {
-  if (val instanceof Error) return val.stack || val.message;
-  return val;
-}
-
-
-/***/ }),
-
-/***/ "../Linda-client/node_modules/engine.io-parser/lib/browser.js":
-/*!********************************************************************!*\
-  !*** ../Linda-client/node_modules/engine.io-parser/lib/browser.js ***!
-  \********************************************************************/
+/***/ "../linda-client-async/node_modules/engine.io-parser/lib/browser.js":
+/*!**************************************************************************!*\
+  !*** ../linda-client-async/node_modules/engine.io-parser/lib/browser.js ***!
+  \**************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5795,15 +5897,15 @@ function coerce(val) {
  * Module dependencies.
  */
 
-var keys = __webpack_require__(/*! ./keys */ "../Linda-client/node_modules/engine.io-parser/lib/keys.js");
-var hasBinary = __webpack_require__(/*! has-binary2 */ "../Linda-client/node_modules/has-binary2/index.js");
-var sliceBuffer = __webpack_require__(/*! arraybuffer.slice */ "../Linda-client/node_modules/arraybuffer.slice/index.js");
-var after = __webpack_require__(/*! after */ "../Linda-client/node_modules/after/index.js");
-var utf8 = __webpack_require__(/*! ./utf8 */ "../Linda-client/node_modules/engine.io-parser/lib/utf8.js");
+var keys = __webpack_require__(/*! ./keys */ "../linda-client-async/node_modules/engine.io-parser/lib/keys.js");
+var hasBinary = __webpack_require__(/*! has-binary2 */ "../linda-client-async/node_modules/has-binary2/index.js");
+var sliceBuffer = __webpack_require__(/*! arraybuffer.slice */ "../linda-client-async/node_modules/arraybuffer.slice/index.js");
+var after = __webpack_require__(/*! after */ "../linda-client-async/node_modules/after/index.js");
+var utf8 = __webpack_require__(/*! ./utf8 */ "../linda-client-async/node_modules/engine.io-parser/lib/utf8.js");
 
 var base64encoder;
 if (global && global.ArrayBuffer) {
-  base64encoder = __webpack_require__(/*! base64-arraybuffer */ "../Linda-client/node_modules/base64-arraybuffer/lib/base64-arraybuffer.js");
+  base64encoder = __webpack_require__(/*! base64-arraybuffer */ "../linda-client-async/node_modules/base64-arraybuffer/lib/base64-arraybuffer.js");
 }
 
 /**
@@ -5861,7 +5963,7 @@ var err = { type: 'error', data: 'parser error' };
  * Create a blob api even for blob builder when vendor prefixes exist
  */
 
-var Blob = __webpack_require__(/*! blob */ "../Linda-client/node_modules/blob/index.js");
+var Blob = __webpack_require__(/*! blob */ "../linda-client-async/node_modules/blob/index.js");
 
 /**
  * Encodes a packet.
@@ -6402,10 +6504,10 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/engine.io-parser/lib/keys.js":
-/*!*****************************************************************!*\
-  !*** ../Linda-client/node_modules/engine.io-parser/lib/keys.js ***!
-  \*****************************************************************/
+/***/ "../linda-client-async/node_modules/engine.io-parser/lib/keys.js":
+/*!***********************************************************************!*\
+  !*** ../linda-client-async/node_modules/engine.io-parser/lib/keys.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -6432,10 +6534,10 @@ module.exports = Object.keys || function keys (obj){
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/engine.io-parser/lib/utf8.js":
-/*!*****************************************************************!*\
-  !*** ../Linda-client/node_modules/engine.io-parser/lib/utf8.js ***!
-  \*****************************************************************/
+/***/ "../linda-client-async/node_modules/engine.io-parser/lib/utf8.js":
+/*!***********************************************************************!*\
+  !*** ../linda-client-async/node_modules/engine.io-parser/lib/utf8.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6686,10 +6788,10 @@ module.exports = Object.keys || function keys (obj){
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/has-binary2/index.js":
-/*!*********************************************************!*\
-  !*** ../Linda-client/node_modules/has-binary2/index.js ***!
-  \*********************************************************/
+/***/ "../linda-client-async/node_modules/has-binary2/index.js":
+/*!***************************************************************!*\
+  !*** ../linda-client-async/node_modules/has-binary2/index.js ***!
+  \***************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6699,7 +6801,7 @@ module.exports = Object.keys || function keys (obj){
  * Module requirements.
  */
 
-var isArray = __webpack_require__(/*! isarray */ "../Linda-client/node_modules/has-binary2/node_modules/isarray/index.js");
+var isArray = __webpack_require__(/*! isarray */ "../linda-client-async/node_modules/isarray/index.js");
 
 var toString = Object.prototype.toString;
 var withNativeBlob = typeof Blob === 'function' ||
@@ -6762,26 +6864,10 @@ function hasBinary (obj) {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/has-binary2/node_modules/isarray/index.js":
-/*!******************************************************************************!*\
-  !*** ../Linda-client/node_modules/has-binary2/node_modules/isarray/index.js ***!
-  \******************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-var toString = {}.toString;
-
-module.exports = Array.isArray || function (arr) {
-  return toString.call(arr) == '[object Array]';
-};
-
-
-/***/ }),
-
-/***/ "../Linda-client/node_modules/has-cors/index.js":
-/*!******************************************************!*\
-  !*** ../Linda-client/node_modules/has-cors/index.js ***!
-  \******************************************************/
+/***/ "../linda-client-async/node_modules/has-cors/index.js":
+/*!************************************************************!*\
+  !*** ../linda-client-async/node_modules/has-cors/index.js ***!
+  \************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -6806,10 +6892,10 @@ try {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/indexof/index.js":
-/*!*****************************************************!*\
-  !*** ../Linda-client/node_modules/indexof/index.js ***!
-  \*****************************************************/
+/***/ "../linda-client-async/node_modules/indexof/index.js":
+/*!***********************************************************!*\
+  !*** ../linda-client-async/node_modules/indexof/index.js ***!
+  \***********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -6826,10 +6912,26 @@ module.exports = function(arr, obj){
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/ms/index.js":
-/*!************************************************!*\
-  !*** ../Linda-client/node_modules/ms/index.js ***!
-  \************************************************/
+/***/ "../linda-client-async/node_modules/isarray/index.js":
+/*!***********************************************************!*\
+  !*** ../linda-client-async/node_modules/isarray/index.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+
+/***/ }),
+
+/***/ "../linda-client-async/node_modules/ms/index.js":
+/*!******************************************************!*\
+  !*** ../linda-client-async/node_modules/ms/index.js ***!
+  \******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -6989,10 +7091,10 @@ function plural(ms, n, name) {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/parseqs/index.js":
-/*!*****************************************************!*\
-  !*** ../Linda-client/node_modules/parseqs/index.js ***!
-  \*****************************************************/
+/***/ "../linda-client-async/node_modules/parseqs/index.js":
+/*!***********************************************************!*\
+  !*** ../linda-client-async/node_modules/parseqs/index.js ***!
+  \***********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -7037,10 +7139,10 @@ exports.decode = function(qs){
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/parseuri/index.js":
-/*!******************************************************!*\
-  !*** ../Linda-client/node_modules/parseuri/index.js ***!
-  \******************************************************/
+/***/ "../linda-client-async/node_modules/parseuri/index.js":
+/*!************************************************************!*\
+  !*** ../linda-client-async/node_modules/parseuri/index.js ***!
+  \************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -7087,10 +7189,10 @@ module.exports = function parseuri(str) {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/socket.io-client/lib/index.js":
-/*!******************************************************************!*\
-  !*** ../Linda-client/node_modules/socket.io-client/lib/index.js ***!
-  \******************************************************************/
+/***/ "../linda-client-async/node_modules/socket.io-client/lib/index.js":
+/*!************************************************************************!*\
+  !*** ../linda-client-async/node_modules/socket.io-client/lib/index.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7099,10 +7201,10 @@ module.exports = function parseuri(str) {
  * Module dependencies.
  */
 
-var url = __webpack_require__(/*! ./url */ "../Linda-client/node_modules/socket.io-client/lib/url.js");
-var parser = __webpack_require__(/*! socket.io-parser */ "../Linda-client/node_modules/socket.io-parser/index.js");
-var Manager = __webpack_require__(/*! ./manager */ "../Linda-client/node_modules/socket.io-client/lib/manager.js");
-var debug = __webpack_require__(/*! debug */ "../Linda-client/node_modules/socket.io-client/node_modules/debug/src/browser.js")('socket.io-client');
+var url = __webpack_require__(/*! ./url */ "../linda-client-async/node_modules/socket.io-client/lib/url.js");
+var parser = __webpack_require__(/*! socket.io-parser */ "../linda-client-async/node_modules/socket.io-parser/index.js");
+var Manager = __webpack_require__(/*! ./manager */ "../linda-client-async/node_modules/socket.io-client/lib/manager.js");
+var debug = __webpack_require__(/*! debug */ "../linda-client-async/node_modules/debug/src/browser.js")('socket.io-client');
 
 /**
  * Module exports.
@@ -7186,16 +7288,16 @@ exports.connect = lookup;
  * @api public
  */
 
-exports.Manager = __webpack_require__(/*! ./manager */ "../Linda-client/node_modules/socket.io-client/lib/manager.js");
-exports.Socket = __webpack_require__(/*! ./socket */ "../Linda-client/node_modules/socket.io-client/lib/socket.js");
+exports.Manager = __webpack_require__(/*! ./manager */ "../linda-client-async/node_modules/socket.io-client/lib/manager.js");
+exports.Socket = __webpack_require__(/*! ./socket */ "../linda-client-async/node_modules/socket.io-client/lib/socket.js");
 
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/socket.io-client/lib/manager.js":
-/*!********************************************************************!*\
-  !*** ../Linda-client/node_modules/socket.io-client/lib/manager.js ***!
-  \********************************************************************/
+/***/ "../linda-client-async/node_modules/socket.io-client/lib/manager.js":
+/*!**************************************************************************!*\
+  !*** ../linda-client-async/node_modules/socket.io-client/lib/manager.js ***!
+  \**************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7204,15 +7306,15 @@ exports.Socket = __webpack_require__(/*! ./socket */ "../Linda-client/node_modul
  * Module dependencies.
  */
 
-var eio = __webpack_require__(/*! engine.io-client */ "../Linda-client/node_modules/engine.io-client/lib/index.js");
-var Socket = __webpack_require__(/*! ./socket */ "../Linda-client/node_modules/socket.io-client/lib/socket.js");
-var Emitter = __webpack_require__(/*! component-emitter */ "../Linda-client/node_modules/component-emitter/index.js");
-var parser = __webpack_require__(/*! socket.io-parser */ "../Linda-client/node_modules/socket.io-parser/index.js");
-var on = __webpack_require__(/*! ./on */ "../Linda-client/node_modules/socket.io-client/lib/on.js");
-var bind = __webpack_require__(/*! component-bind */ "../Linda-client/node_modules/component-bind/index.js");
-var debug = __webpack_require__(/*! debug */ "../Linda-client/node_modules/socket.io-client/node_modules/debug/src/browser.js")('socket.io-client:manager');
-var indexOf = __webpack_require__(/*! indexof */ "../Linda-client/node_modules/indexof/index.js");
-var Backoff = __webpack_require__(/*! backo2 */ "../Linda-client/node_modules/backo2/index.js");
+var eio = __webpack_require__(/*! engine.io-client */ "../linda-client-async/node_modules/engine.io-client/lib/index.js");
+var Socket = __webpack_require__(/*! ./socket */ "../linda-client-async/node_modules/socket.io-client/lib/socket.js");
+var Emitter = __webpack_require__(/*! component-emitter */ "../linda-client-async/node_modules/component-emitter/index.js");
+var parser = __webpack_require__(/*! socket.io-parser */ "../linda-client-async/node_modules/socket.io-parser/index.js");
+var on = __webpack_require__(/*! ./on */ "../linda-client-async/node_modules/socket.io-client/lib/on.js");
+var bind = __webpack_require__(/*! component-bind */ "../linda-client-async/node_modules/component-bind/index.js");
+var debug = __webpack_require__(/*! debug */ "../linda-client-async/node_modules/debug/src/browser.js")('socket.io-client:manager');
+var indexOf = __webpack_require__(/*! indexof */ "../linda-client-async/node_modules/indexof/index.js");
+var Backoff = __webpack_require__(/*! backo2 */ "../linda-client-async/node_modules/backo2/index.js");
 
 /**
  * IE6+ hasOwnProperty
@@ -7776,10 +7878,10 @@ Manager.prototype.onreconnect = function () {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/socket.io-client/lib/on.js":
-/*!***************************************************************!*\
-  !*** ../Linda-client/node_modules/socket.io-client/lib/on.js ***!
-  \***************************************************************/
+/***/ "../linda-client-async/node_modules/socket.io-client/lib/on.js":
+/*!*********************************************************************!*\
+  !*** ../linda-client-async/node_modules/socket.io-client/lib/on.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -7811,10 +7913,10 @@ function on (obj, ev, fn) {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/socket.io-client/lib/socket.js":
-/*!*******************************************************************!*\
-  !*** ../Linda-client/node_modules/socket.io-client/lib/socket.js ***!
-  \*******************************************************************/
+/***/ "../linda-client-async/node_modules/socket.io-client/lib/socket.js":
+/*!*************************************************************************!*\
+  !*** ../linda-client-async/node_modules/socket.io-client/lib/socket.js ***!
+  \*************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7823,14 +7925,14 @@ function on (obj, ev, fn) {
  * Module dependencies.
  */
 
-var parser = __webpack_require__(/*! socket.io-parser */ "../Linda-client/node_modules/socket.io-parser/index.js");
-var Emitter = __webpack_require__(/*! component-emitter */ "../Linda-client/node_modules/component-emitter/index.js");
-var toArray = __webpack_require__(/*! to-array */ "../Linda-client/node_modules/to-array/index.js");
-var on = __webpack_require__(/*! ./on */ "../Linda-client/node_modules/socket.io-client/lib/on.js");
-var bind = __webpack_require__(/*! component-bind */ "../Linda-client/node_modules/component-bind/index.js");
-var debug = __webpack_require__(/*! debug */ "../Linda-client/node_modules/socket.io-client/node_modules/debug/src/browser.js")('socket.io-client:socket');
-var parseqs = __webpack_require__(/*! parseqs */ "../Linda-client/node_modules/parseqs/index.js");
-var hasBin = __webpack_require__(/*! has-binary2 */ "../Linda-client/node_modules/has-binary2/index.js");
+var parser = __webpack_require__(/*! socket.io-parser */ "../linda-client-async/node_modules/socket.io-parser/index.js");
+var Emitter = __webpack_require__(/*! component-emitter */ "../linda-client-async/node_modules/component-emitter/index.js");
+var toArray = __webpack_require__(/*! to-array */ "../linda-client-async/node_modules/to-array/index.js");
+var on = __webpack_require__(/*! ./on */ "../linda-client-async/node_modules/socket.io-client/lib/on.js");
+var bind = __webpack_require__(/*! component-bind */ "../linda-client-async/node_modules/component-bind/index.js");
+var debug = __webpack_require__(/*! debug */ "../linda-client-async/node_modules/debug/src/browser.js")('socket.io-client:socket');
+var parseqs = __webpack_require__(/*! parseqs */ "../linda-client-async/node_modules/parseqs/index.js");
+var hasBin = __webpack_require__(/*! has-binary2 */ "../linda-client-async/node_modules/has-binary2/index.js");
 
 /**
  * Module exports.
@@ -8260,10 +8362,10 @@ Socket.prototype.binary = function (binary) {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/socket.io-client/lib/url.js":
-/*!****************************************************************!*\
-  !*** ../Linda-client/node_modules/socket.io-client/lib/url.js ***!
-  \****************************************************************/
+/***/ "../linda-client-async/node_modules/socket.io-client/lib/url.js":
+/*!**********************************************************************!*\
+  !*** ../linda-client-async/node_modules/socket.io-client/lib/url.js ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8272,8 +8374,8 @@ Socket.prototype.binary = function (binary) {
  * Module dependencies.
  */
 
-var parseuri = __webpack_require__(/*! parseuri */ "../Linda-client/node_modules/parseuri/index.js");
-var debug = __webpack_require__(/*! debug */ "../Linda-client/node_modules/socket.io-client/node_modules/debug/src/browser.js")('socket.io-client:url');
+var parseuri = __webpack_require__(/*! parseuri */ "../linda-client-async/node_modules/parseuri/index.js");
+var debug = __webpack_require__(/*! debug */ "../linda-client-async/node_modules/debug/src/browser.js")('socket.io-client:url');
 
 /**
  * Module exports.
@@ -8347,453 +8449,10 @@ function url (uri, loc) {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/socket.io-client/node_modules/debug/src/browser.js":
-/*!***************************************************************************************!*\
-  !*** ../Linda-client/node_modules/socket.io-client/node_modules/debug/src/browser.js ***!
-  \***************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * This is the web browser implementation of `debug()`.
- *
- * Expose `debug()` as the module.
- */
-
-exports = module.exports = __webpack_require__(/*! ./debug */ "../Linda-client/node_modules/socket.io-client/node_modules/debug/src/debug.js");
-exports.log = log;
-exports.formatArgs = formatArgs;
-exports.save = save;
-exports.load = load;
-exports.useColors = useColors;
-exports.storage = 'undefined' != typeof chrome
-               && 'undefined' != typeof chrome.storage
-                  ? chrome.storage.local
-                  : localstorage();
-
-/**
- * Colors.
- */
-
-exports.colors = [
-  '#0000CC', '#0000FF', '#0033CC', '#0033FF', '#0066CC', '#0066FF', '#0099CC',
-  '#0099FF', '#00CC00', '#00CC33', '#00CC66', '#00CC99', '#00CCCC', '#00CCFF',
-  '#3300CC', '#3300FF', '#3333CC', '#3333FF', '#3366CC', '#3366FF', '#3399CC',
-  '#3399FF', '#33CC00', '#33CC33', '#33CC66', '#33CC99', '#33CCCC', '#33CCFF',
-  '#6600CC', '#6600FF', '#6633CC', '#6633FF', '#66CC00', '#66CC33', '#9900CC',
-  '#9900FF', '#9933CC', '#9933FF', '#99CC00', '#99CC33', '#CC0000', '#CC0033',
-  '#CC0066', '#CC0099', '#CC00CC', '#CC00FF', '#CC3300', '#CC3333', '#CC3366',
-  '#CC3399', '#CC33CC', '#CC33FF', '#CC6600', '#CC6633', '#CC9900', '#CC9933',
-  '#CCCC00', '#CCCC33', '#FF0000', '#FF0033', '#FF0066', '#FF0099', '#FF00CC',
-  '#FF00FF', '#FF3300', '#FF3333', '#FF3366', '#FF3399', '#FF33CC', '#FF33FF',
-  '#FF6600', '#FF6633', '#FF9900', '#FF9933', '#FFCC00', '#FFCC33'
-];
-
-/**
- * Currently only WebKit-based Web Inspectors, Firefox >= v31,
- * and the Firebug extension (any Firefox version) are known
- * to support "%c" CSS customizations.
- *
- * TODO: add a `localStorage` variable to explicitly enable/disable colors
- */
-
-function useColors() {
-  // NB: In an Electron preload script, document will be defined but not fully
-  // initialized. Since we know we're in Chrome, we'll just detect this case
-  // explicitly
-  if (typeof window !== 'undefined' && window.process && window.process.type === 'renderer') {
-    return true;
-  }
-
-  // Internet Explorer and Edge do not support colors.
-  if (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)) {
-    return false;
-  }
-
-  // is webkit? http://stackoverflow.com/a/16459606/376773
-  // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
-  return (typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
-    // is firebug? http://stackoverflow.com/a/398120/376773
-    (typeof window !== 'undefined' && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
-    // is firefox >= v31?
-    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
-    // double check webkit in userAgent just in case we are in a worker
-    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
-}
-
-/**
- * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
- */
-
-exports.formatters.j = function(v) {
-  try {
-    return JSON.stringify(v);
-  } catch (err) {
-    return '[UnexpectedJSONParseError]: ' + err.message;
-  }
-};
-
-
-/**
- * Colorize log arguments if enabled.
- *
- * @api public
- */
-
-function formatArgs(args) {
-  var useColors = this.useColors;
-
-  args[0] = (useColors ? '%c' : '')
-    + this.namespace
-    + (useColors ? ' %c' : ' ')
-    + args[0]
-    + (useColors ? '%c ' : ' ')
-    + '+' + exports.humanize(this.diff);
-
-  if (!useColors) return;
-
-  var c = 'color: ' + this.color;
-  args.splice(1, 0, c, 'color: inherit')
-
-  // the final "%c" is somewhat tricky, because there could be other
-  // arguments passed either before or after the %c, so we need to
-  // figure out the correct index to insert the CSS into
-  var index = 0;
-  var lastC = 0;
-  args[0].replace(/%[a-zA-Z%]/g, function(match) {
-    if ('%%' === match) return;
-    index++;
-    if ('%c' === match) {
-      // we only are interested in the *last* %c
-      // (the user may have provided their own)
-      lastC = index;
-    }
-  });
-
-  args.splice(lastC, 0, c);
-}
-
-/**
- * Invokes `console.log()` when available.
- * No-op when `console.log` is not a "function".
- *
- * @api public
- */
-
-function log() {
-  // this hackery is required for IE8/9, where
-  // the `console.log` function doesn't have 'apply'
-  return 'object' === typeof console
-    && console.log
-    && Function.prototype.apply.call(console.log, console, arguments);
-}
-
-/**
- * Save `namespaces`.
- *
- * @param {String} namespaces
- * @api private
- */
-
-function save(namespaces) {
-  try {
-    if (null == namespaces) {
-      exports.storage.removeItem('debug');
-    } else {
-      exports.storage.debug = namespaces;
-    }
-  } catch(e) {}
-}
-
-/**
- * Load `namespaces`.
- *
- * @return {String} returns the previously persisted debug modes
- * @api private
- */
-
-function load() {
-  var r;
-  try {
-    r = exports.storage.debug;
-  } catch(e) {}
-
-  // If debug isn't set in LS, and we're in Electron, try to load $DEBUG
-  if (!r && typeof process !== 'undefined' && 'env' in process) {
-    r = process.env.DEBUG;
-  }
-
-  return r;
-}
-
-/**
- * Enable namespaces listed in `localStorage.debug` initially.
- */
-
-exports.enable(load());
-
-/**
- * Localstorage attempts to return the localstorage.
- *
- * This is necessary because safari throws
- * when a user disables cookies/localstorage
- * and you attempt to access it.
- *
- * @return {LocalStorage}
- * @api private
- */
-
-function localstorage() {
-  try {
-    return window.localStorage;
-  } catch (e) {}
-}
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../../../../.nodebrew/node/v8.9.1/lib/node_modules/webpack/node_modules/process/browser.js */ "../../../../.nodebrew/node/v8.9.1/lib/node_modules/webpack/node_modules/process/browser.js")))
-
-/***/ }),
-
-/***/ "../Linda-client/node_modules/socket.io-client/node_modules/debug/src/debug.js":
-/*!*************************************************************************************!*\
-  !*** ../Linda-client/node_modules/socket.io-client/node_modules/debug/src/debug.js ***!
-  \*************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-/**
- * This is the common logic for both the Node.js and web browser
- * implementations of `debug()`.
- *
- * Expose `debug()` as the module.
- */
-
-exports = module.exports = createDebug.debug = createDebug['default'] = createDebug;
-exports.coerce = coerce;
-exports.disable = disable;
-exports.enable = enable;
-exports.enabled = enabled;
-exports.humanize = __webpack_require__(/*! ms */ "../Linda-client/node_modules/ms/index.js");
-
-/**
- * Active `debug` instances.
- */
-exports.instances = [];
-
-/**
- * The currently active debug mode names, and names to skip.
- */
-
-exports.names = [];
-exports.skips = [];
-
-/**
- * Map of special "%n" handling functions, for the debug "format" argument.
- *
- * Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
- */
-
-exports.formatters = {};
-
-/**
- * Select a color.
- * @param {String} namespace
- * @return {Number}
- * @api private
- */
-
-function selectColor(namespace) {
-  var hash = 0, i;
-
-  for (i in namespace) {
-    hash  = ((hash << 5) - hash) + namespace.charCodeAt(i);
-    hash |= 0; // Convert to 32bit integer
-  }
-
-  return exports.colors[Math.abs(hash) % exports.colors.length];
-}
-
-/**
- * Create a debugger with the given `namespace`.
- *
- * @param {String} namespace
- * @return {Function}
- * @api public
- */
-
-function createDebug(namespace) {
-
-  var prevTime;
-
-  function debug() {
-    // disabled?
-    if (!debug.enabled) return;
-
-    var self = debug;
-
-    // set `diff` timestamp
-    var curr = +new Date();
-    var ms = curr - (prevTime || curr);
-    self.diff = ms;
-    self.prev = prevTime;
-    self.curr = curr;
-    prevTime = curr;
-
-    // turn the `arguments` into a proper Array
-    var args = new Array(arguments.length);
-    for (var i = 0; i < args.length; i++) {
-      args[i] = arguments[i];
-    }
-
-    args[0] = exports.coerce(args[0]);
-
-    if ('string' !== typeof args[0]) {
-      // anything else let's inspect with %O
-      args.unshift('%O');
-    }
-
-    // apply any `formatters` transformations
-    var index = 0;
-    args[0] = args[0].replace(/%([a-zA-Z%])/g, function(match, format) {
-      // if we encounter an escaped % then don't increase the array index
-      if (match === '%%') return match;
-      index++;
-      var formatter = exports.formatters[format];
-      if ('function' === typeof formatter) {
-        var val = args[index];
-        match = formatter.call(self, val);
-
-        // now we need to remove `args[index]` since it's inlined in the `format`
-        args.splice(index, 1);
-        index--;
-      }
-      return match;
-    });
-
-    // apply env-specific formatting (colors, etc.)
-    exports.formatArgs.call(self, args);
-
-    var logFn = debug.log || exports.log || console.log.bind(console);
-    logFn.apply(self, args);
-  }
-
-  debug.namespace = namespace;
-  debug.enabled = exports.enabled(namespace);
-  debug.useColors = exports.useColors();
-  debug.color = selectColor(namespace);
-  debug.destroy = destroy;
-
-  // env-specific initialization logic for debug instances
-  if ('function' === typeof exports.init) {
-    exports.init(debug);
-  }
-
-  exports.instances.push(debug);
-
-  return debug;
-}
-
-function destroy () {
-  var index = exports.instances.indexOf(this);
-  if (index !== -1) {
-    exports.instances.splice(index, 1);
-    return true;
-  } else {
-    return false;
-  }
-}
-
-/**
- * Enables a debug mode by namespaces. This can include modes
- * separated by a colon and wildcards.
- *
- * @param {String} namespaces
- * @api public
- */
-
-function enable(namespaces) {
-  exports.save(namespaces);
-
-  exports.names = [];
-  exports.skips = [];
-
-  var i;
-  var split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
-  var len = split.length;
-
-  for (i = 0; i < len; i++) {
-    if (!split[i]) continue; // ignore empty strings
-    namespaces = split[i].replace(/\*/g, '.*?');
-    if (namespaces[0] === '-') {
-      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
-    } else {
-      exports.names.push(new RegExp('^' + namespaces + '$'));
-    }
-  }
-
-  for (i = 0; i < exports.instances.length; i++) {
-    var instance = exports.instances[i];
-    instance.enabled = exports.enabled(instance.namespace);
-  }
-}
-
-/**
- * Disable debug output.
- *
- * @api public
- */
-
-function disable() {
-  exports.enable('');
-}
-
-/**
- * Returns true if the given mode name is enabled, false otherwise.
- *
- * @param {String} name
- * @return {Boolean}
- * @api public
- */
-
-function enabled(name) {
-  if (name[name.length - 1] === '*') {
-    return true;
-  }
-  var i, len;
-  for (i = 0, len = exports.skips.length; i < len; i++) {
-    if (exports.skips[i].test(name)) {
-      return false;
-    }
-  }
-  for (i = 0, len = exports.names.length; i < len; i++) {
-    if (exports.names[i].test(name)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * Coerce `val`.
- *
- * @param {Mixed} val
- * @return {Mixed}
- * @api private
- */
-
-function coerce(val) {
-  if (val instanceof Error) return val.stack || val.message;
-  return val;
-}
-
-
-/***/ }),
-
-/***/ "../Linda-client/node_modules/socket.io-parser/binary.js":
-/*!***************************************************************!*\
-  !*** ../Linda-client/node_modules/socket.io-parser/binary.js ***!
-  \***************************************************************/
+/***/ "../linda-client-async/node_modules/socket.io-parser/binary.js":
+/*!*********************************************************************!*\
+  !*** ../linda-client-async/node_modules/socket.io-parser/binary.js ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8803,8 +8462,8 @@ function coerce(val) {
  * Module requirements
  */
 
-var isArray = __webpack_require__(/*! isarray */ "../Linda-client/node_modules/socket.io-parser/node_modules/isarray/index.js");
-var isBuf = __webpack_require__(/*! ./is-buffer */ "../Linda-client/node_modules/socket.io-parser/is-buffer.js");
+var isArray = __webpack_require__(/*! isarray */ "../linda-client-async/node_modules/isarray/index.js");
+var isBuf = __webpack_require__(/*! ./is-buffer */ "../linda-client-async/node_modules/socket.io-parser/is-buffer.js");
 var toString = Object.prototype.toString;
 var withNativeBlob = typeof global.Blob === 'function' || toString.call(global.Blob) === '[object BlobConstructor]';
 var withNativeFile = typeof global.File === 'function' || toString.call(global.File) === '[object FileConstructor]';
@@ -8943,10 +8602,10 @@ exports.removeBlobs = function(data, callback) {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/socket.io-parser/index.js":
-/*!**************************************************************!*\
-  !*** ../Linda-client/node_modules/socket.io-parser/index.js ***!
-  \**************************************************************/
+/***/ "../linda-client-async/node_modules/socket.io-parser/index.js":
+/*!********************************************************************!*\
+  !*** ../linda-client-async/node_modules/socket.io-parser/index.js ***!
+  \********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8955,11 +8614,11 @@ exports.removeBlobs = function(data, callback) {
  * Module dependencies.
  */
 
-var debug = __webpack_require__(/*! debug */ "../Linda-client/node_modules/socket.io-parser/node_modules/debug/src/browser.js")('socket.io-parser');
-var Emitter = __webpack_require__(/*! component-emitter */ "../Linda-client/node_modules/component-emitter/index.js");
-var binary = __webpack_require__(/*! ./binary */ "../Linda-client/node_modules/socket.io-parser/binary.js");
-var isArray = __webpack_require__(/*! isarray */ "../Linda-client/node_modules/socket.io-parser/node_modules/isarray/index.js");
-var isBuf = __webpack_require__(/*! ./is-buffer */ "../Linda-client/node_modules/socket.io-parser/is-buffer.js");
+var debug = __webpack_require__(/*! debug */ "../linda-client-async/node_modules/debug/src/browser.js")('socket.io-parser');
+var Emitter = __webpack_require__(/*! component-emitter */ "../linda-client-async/node_modules/component-emitter/index.js");
+var binary = __webpack_require__(/*! ./binary */ "../linda-client-async/node_modules/socket.io-parser/binary.js");
+var isArray = __webpack_require__(/*! isarray */ "../linda-client-async/node_modules/isarray/index.js");
+var isBuf = __webpack_require__(/*! ./is-buffer */ "../linda-client-async/node_modules/socket.io-parser/is-buffer.js");
 
 /**
  * Protocol version.
@@ -9371,10 +9030,10 @@ function error(msg) {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/socket.io-parser/is-buffer.js":
-/*!******************************************************************!*\
-  !*** ../Linda-client/node_modules/socket.io-parser/is-buffer.js ***!
-  \******************************************************************/
+/***/ "../linda-client-async/node_modules/socket.io-parser/is-buffer.js":
+/*!************************************************************************!*\
+  !*** ../linda-client-async/node_modules/socket.io-parser/is-buffer.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9407,469 +9066,10 @@ function isBuf(obj) {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/socket.io-parser/node_modules/debug/src/browser.js":
-/*!***************************************************************************************!*\
-  !*** ../Linda-client/node_modules/socket.io-parser/node_modules/debug/src/browser.js ***!
-  \***************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * This is the web browser implementation of `debug()`.
- *
- * Expose `debug()` as the module.
- */
-
-exports = module.exports = __webpack_require__(/*! ./debug */ "../Linda-client/node_modules/socket.io-parser/node_modules/debug/src/debug.js");
-exports.log = log;
-exports.formatArgs = formatArgs;
-exports.save = save;
-exports.load = load;
-exports.useColors = useColors;
-exports.storage = 'undefined' != typeof chrome
-               && 'undefined' != typeof chrome.storage
-                  ? chrome.storage.local
-                  : localstorage();
-
-/**
- * Colors.
- */
-
-exports.colors = [
-  '#0000CC', '#0000FF', '#0033CC', '#0033FF', '#0066CC', '#0066FF', '#0099CC',
-  '#0099FF', '#00CC00', '#00CC33', '#00CC66', '#00CC99', '#00CCCC', '#00CCFF',
-  '#3300CC', '#3300FF', '#3333CC', '#3333FF', '#3366CC', '#3366FF', '#3399CC',
-  '#3399FF', '#33CC00', '#33CC33', '#33CC66', '#33CC99', '#33CCCC', '#33CCFF',
-  '#6600CC', '#6600FF', '#6633CC', '#6633FF', '#66CC00', '#66CC33', '#9900CC',
-  '#9900FF', '#9933CC', '#9933FF', '#99CC00', '#99CC33', '#CC0000', '#CC0033',
-  '#CC0066', '#CC0099', '#CC00CC', '#CC00FF', '#CC3300', '#CC3333', '#CC3366',
-  '#CC3399', '#CC33CC', '#CC33FF', '#CC6600', '#CC6633', '#CC9900', '#CC9933',
-  '#CCCC00', '#CCCC33', '#FF0000', '#FF0033', '#FF0066', '#FF0099', '#FF00CC',
-  '#FF00FF', '#FF3300', '#FF3333', '#FF3366', '#FF3399', '#FF33CC', '#FF33FF',
-  '#FF6600', '#FF6633', '#FF9900', '#FF9933', '#FFCC00', '#FFCC33'
-];
-
-/**
- * Currently only WebKit-based Web Inspectors, Firefox >= v31,
- * and the Firebug extension (any Firefox version) are known
- * to support "%c" CSS customizations.
- *
- * TODO: add a `localStorage` variable to explicitly enable/disable colors
- */
-
-function useColors() {
-  // NB: In an Electron preload script, document will be defined but not fully
-  // initialized. Since we know we're in Chrome, we'll just detect this case
-  // explicitly
-  if (typeof window !== 'undefined' && window.process && window.process.type === 'renderer') {
-    return true;
-  }
-
-  // Internet Explorer and Edge do not support colors.
-  if (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)) {
-    return false;
-  }
-
-  // is webkit? http://stackoverflow.com/a/16459606/376773
-  // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
-  return (typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
-    // is firebug? http://stackoverflow.com/a/398120/376773
-    (typeof window !== 'undefined' && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
-    // is firefox >= v31?
-    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
-    // double check webkit in userAgent just in case we are in a worker
-    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
-}
-
-/**
- * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
- */
-
-exports.formatters.j = function(v) {
-  try {
-    return JSON.stringify(v);
-  } catch (err) {
-    return '[UnexpectedJSONParseError]: ' + err.message;
-  }
-};
-
-
-/**
- * Colorize log arguments if enabled.
- *
- * @api public
- */
-
-function formatArgs(args) {
-  var useColors = this.useColors;
-
-  args[0] = (useColors ? '%c' : '')
-    + this.namespace
-    + (useColors ? ' %c' : ' ')
-    + args[0]
-    + (useColors ? '%c ' : ' ')
-    + '+' + exports.humanize(this.diff);
-
-  if (!useColors) return;
-
-  var c = 'color: ' + this.color;
-  args.splice(1, 0, c, 'color: inherit')
-
-  // the final "%c" is somewhat tricky, because there could be other
-  // arguments passed either before or after the %c, so we need to
-  // figure out the correct index to insert the CSS into
-  var index = 0;
-  var lastC = 0;
-  args[0].replace(/%[a-zA-Z%]/g, function(match) {
-    if ('%%' === match) return;
-    index++;
-    if ('%c' === match) {
-      // we only are interested in the *last* %c
-      // (the user may have provided their own)
-      lastC = index;
-    }
-  });
-
-  args.splice(lastC, 0, c);
-}
-
-/**
- * Invokes `console.log()` when available.
- * No-op when `console.log` is not a "function".
- *
- * @api public
- */
-
-function log() {
-  // this hackery is required for IE8/9, where
-  // the `console.log` function doesn't have 'apply'
-  return 'object' === typeof console
-    && console.log
-    && Function.prototype.apply.call(console.log, console, arguments);
-}
-
-/**
- * Save `namespaces`.
- *
- * @param {String} namespaces
- * @api private
- */
-
-function save(namespaces) {
-  try {
-    if (null == namespaces) {
-      exports.storage.removeItem('debug');
-    } else {
-      exports.storage.debug = namespaces;
-    }
-  } catch(e) {}
-}
-
-/**
- * Load `namespaces`.
- *
- * @return {String} returns the previously persisted debug modes
- * @api private
- */
-
-function load() {
-  var r;
-  try {
-    r = exports.storage.debug;
-  } catch(e) {}
-
-  // If debug isn't set in LS, and we're in Electron, try to load $DEBUG
-  if (!r && typeof process !== 'undefined' && 'env' in process) {
-    r = process.env.DEBUG;
-  }
-
-  return r;
-}
-
-/**
- * Enable namespaces listed in `localStorage.debug` initially.
- */
-
-exports.enable(load());
-
-/**
- * Localstorage attempts to return the localstorage.
- *
- * This is necessary because safari throws
- * when a user disables cookies/localstorage
- * and you attempt to access it.
- *
- * @return {LocalStorage}
- * @api private
- */
-
-function localstorage() {
-  try {
-    return window.localStorage;
-  } catch (e) {}
-}
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../../../../.nodebrew/node/v8.9.1/lib/node_modules/webpack/node_modules/process/browser.js */ "../../../../.nodebrew/node/v8.9.1/lib/node_modules/webpack/node_modules/process/browser.js")))
-
-/***/ }),
-
-/***/ "../Linda-client/node_modules/socket.io-parser/node_modules/debug/src/debug.js":
-/*!*************************************************************************************!*\
-  !*** ../Linda-client/node_modules/socket.io-parser/node_modules/debug/src/debug.js ***!
-  \*************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-/**
- * This is the common logic for both the Node.js and web browser
- * implementations of `debug()`.
- *
- * Expose `debug()` as the module.
- */
-
-exports = module.exports = createDebug.debug = createDebug['default'] = createDebug;
-exports.coerce = coerce;
-exports.disable = disable;
-exports.enable = enable;
-exports.enabled = enabled;
-exports.humanize = __webpack_require__(/*! ms */ "../Linda-client/node_modules/ms/index.js");
-
-/**
- * Active `debug` instances.
- */
-exports.instances = [];
-
-/**
- * The currently active debug mode names, and names to skip.
- */
-
-exports.names = [];
-exports.skips = [];
-
-/**
- * Map of special "%n" handling functions, for the debug "format" argument.
- *
- * Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
- */
-
-exports.formatters = {};
-
-/**
- * Select a color.
- * @param {String} namespace
- * @return {Number}
- * @api private
- */
-
-function selectColor(namespace) {
-  var hash = 0, i;
-
-  for (i in namespace) {
-    hash  = ((hash << 5) - hash) + namespace.charCodeAt(i);
-    hash |= 0; // Convert to 32bit integer
-  }
-
-  return exports.colors[Math.abs(hash) % exports.colors.length];
-}
-
-/**
- * Create a debugger with the given `namespace`.
- *
- * @param {String} namespace
- * @return {Function}
- * @api public
- */
-
-function createDebug(namespace) {
-
-  var prevTime;
-
-  function debug() {
-    // disabled?
-    if (!debug.enabled) return;
-
-    var self = debug;
-
-    // set `diff` timestamp
-    var curr = +new Date();
-    var ms = curr - (prevTime || curr);
-    self.diff = ms;
-    self.prev = prevTime;
-    self.curr = curr;
-    prevTime = curr;
-
-    // turn the `arguments` into a proper Array
-    var args = new Array(arguments.length);
-    for (var i = 0; i < args.length; i++) {
-      args[i] = arguments[i];
-    }
-
-    args[0] = exports.coerce(args[0]);
-
-    if ('string' !== typeof args[0]) {
-      // anything else let's inspect with %O
-      args.unshift('%O');
-    }
-
-    // apply any `formatters` transformations
-    var index = 0;
-    args[0] = args[0].replace(/%([a-zA-Z%])/g, function(match, format) {
-      // if we encounter an escaped % then don't increase the array index
-      if (match === '%%') return match;
-      index++;
-      var formatter = exports.formatters[format];
-      if ('function' === typeof formatter) {
-        var val = args[index];
-        match = formatter.call(self, val);
-
-        // now we need to remove `args[index]` since it's inlined in the `format`
-        args.splice(index, 1);
-        index--;
-      }
-      return match;
-    });
-
-    // apply env-specific formatting (colors, etc.)
-    exports.formatArgs.call(self, args);
-
-    var logFn = debug.log || exports.log || console.log.bind(console);
-    logFn.apply(self, args);
-  }
-
-  debug.namespace = namespace;
-  debug.enabled = exports.enabled(namespace);
-  debug.useColors = exports.useColors();
-  debug.color = selectColor(namespace);
-  debug.destroy = destroy;
-
-  // env-specific initialization logic for debug instances
-  if ('function' === typeof exports.init) {
-    exports.init(debug);
-  }
-
-  exports.instances.push(debug);
-
-  return debug;
-}
-
-function destroy () {
-  var index = exports.instances.indexOf(this);
-  if (index !== -1) {
-    exports.instances.splice(index, 1);
-    return true;
-  } else {
-    return false;
-  }
-}
-
-/**
- * Enables a debug mode by namespaces. This can include modes
- * separated by a colon and wildcards.
- *
- * @param {String} namespaces
- * @api public
- */
-
-function enable(namespaces) {
-  exports.save(namespaces);
-
-  exports.names = [];
-  exports.skips = [];
-
-  var i;
-  var split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
-  var len = split.length;
-
-  for (i = 0; i < len; i++) {
-    if (!split[i]) continue; // ignore empty strings
-    namespaces = split[i].replace(/\*/g, '.*?');
-    if (namespaces[0] === '-') {
-      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
-    } else {
-      exports.names.push(new RegExp('^' + namespaces + '$'));
-    }
-  }
-
-  for (i = 0; i < exports.instances.length; i++) {
-    var instance = exports.instances[i];
-    instance.enabled = exports.enabled(instance.namespace);
-  }
-}
-
-/**
- * Disable debug output.
- *
- * @api public
- */
-
-function disable() {
-  exports.enable('');
-}
-
-/**
- * Returns true if the given mode name is enabled, false otherwise.
- *
- * @param {String} name
- * @return {Boolean}
- * @api public
- */
-
-function enabled(name) {
-  if (name[name.length - 1] === '*') {
-    return true;
-  }
-  var i, len;
-  for (i = 0, len = exports.skips.length; i < len; i++) {
-    if (exports.skips[i].test(name)) {
-      return false;
-    }
-  }
-  for (i = 0, len = exports.names.length; i < len; i++) {
-    if (exports.names[i].test(name)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * Coerce `val`.
- *
- * @param {Mixed} val
- * @return {Mixed}
- * @api private
- */
-
-function coerce(val) {
-  if (val instanceof Error) return val.stack || val.message;
-  return val;
-}
-
-
-/***/ }),
-
-/***/ "../Linda-client/node_modules/socket.io-parser/node_modules/isarray/index.js":
-/*!***********************************************************************************!*\
-  !*** ../Linda-client/node_modules/socket.io-parser/node_modules/isarray/index.js ***!
-  \***********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-var toString = {}.toString;
-
-module.exports = Array.isArray || function (arr) {
-  return toString.call(arr) == '[object Array]';
-};
-
-
-/***/ }),
-
-/***/ "../Linda-client/node_modules/to-array/index.js":
-/*!******************************************************!*\
-  !*** ../Linda-client/node_modules/to-array/index.js ***!
-  \******************************************************/
+/***/ "../linda-client-async/node_modules/to-array/index.js":
+/*!************************************************************!*\
+  !*** ../linda-client-async/node_modules/to-array/index.js ***!
+  \************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -9890,10 +9090,10 @@ function toArray(list, index) {
 
 /***/ }),
 
-/***/ "../Linda-client/node_modules/yeast/index.js":
-/*!***************************************************!*\
-  !*** ../Linda-client/node_modules/yeast/index.js ***!
-  \***************************************************/
+/***/ "../linda-client-async/node_modules/yeast/index.js":
+/*!*********************************************************!*\
+  !*** ../linda-client-async/node_modules/yeast/index.js ***!
+  \*********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -31237,8 +30437,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 var ReactDOM = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-var Linda_Client_1 = __webpack_require__(/*! Linda-Client */ "../Linda-client/dist/lindaClient.js");
-var lindaClient = new Linda_Client_1.default();
+var linda_client_async_1 = __webpack_require__(/*! linda-client-async */ "../linda-client-async/dist/index.js");
 var TupleSpace = /** @class */ (function (_super) {
     __extends(TupleSpace, _super);
     function TupleSpace(props) {
@@ -31247,29 +30446,71 @@ var TupleSpace = /** @class */ (function (_super) {
             tuples: [],
             watchingTuple: {},
         };
+        _this.lindaClient = new linda_client_async_1.default();
         return _this;
     }
     TupleSpace.prototype.parseURLParams = function () {
-        var returnObj = {};
-        var queryStringArray = location.search.substring(1).split("&");
-        queryStringArray.map(function (value) {
-            var element = value.split("=");
-            returnObj[element[0]] = element[1];
+        return __awaiter(this, void 0, void 0, function () {
+            var returnObj, queryStringArray;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        returnObj = {};
+                        return [4 /*yield*/, location.search.substring(1).split("&")];
+                    case 1:
+                        queryStringArray = _a.sent();
+                        return [4 /*yield*/, queryStringArray.map(function (value) {
+                                var element = value.split("=");
+                                returnObj[element[0]] = element[1];
+                            })];
+                    case 2:
+                        _a.sent();
+                        this.setState({ watchingTuple: returnObj });
+                        return [2 /*return*/];
+                }
+            });
         });
-        this.setState({ watchingTuple: returnObj });
+    };
+    TupleSpace.prototype.connectLinda = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.lindaClient.connect("http://localhost:3000/masuilab")];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     TupleSpace.prototype.writeTuple = function (tuple) {
-        return function () {
-            lindaClient.connect("http://localhost:3000/masuilab", function () {
-                lindaClient.write(tuple, function (data) { });
-            });
-        };
+        this.lindaClient.write(tuple);
     };
     TupleSpace.prototype.watchTuple = function (tuple) {
-        var _this = this;
-        lindaClient.connect("http://localhost:3000/masuilab", function () {
-            lindaClient.watch(tuple, function (data) {
-                _this.setState({ tuples: [data._payload].concat(_this.state.tuples) });
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                this.lindaClient.watch(tuple, function (data) {
+                    _this.setState({ tuples: [data._payload].concat(_this.state.tuples) });
+                });
+                this.lindaClient.onDisconnected(function () { return __awaiter(_this, void 0, void 0, function () {
+                    var _a;
+                    return __generator(this, function (_b) {
+                        switch (_b.label) {
+                            case 0:
+                                this.lindaClient = null;
+                                _a = this;
+                                return [4 /*yield*/, new linda_client_async_1.default()];
+                            case 1:
+                                _a.lindaClient = _b.sent();
+                                return [4 /*yield*/, this.connectLinda()];
+                            case 2:
+                                _b.sent();
+                                return [2 /*return*/];
+                        }
+                    });
+                }); });
+                return [2 /*return*/];
             });
         });
     };
@@ -31280,8 +30521,11 @@ var TupleSpace = /** @class */ (function (_super) {
                     case 0: return [4 /*yield*/, this.parseURLParams()];
                     case 1:
                         _a.sent();
-                        return [4 /*yield*/, this.watchTuple(this.state.watchingTuple)];
+                        return [4 /*yield*/, this.connectLinda()];
                     case 2:
+                        _a.sent();
+                        return [4 /*yield*/, this.watchTuple(this.state.watchingTuple)];
+                    case 3:
                         _a.sent();
                         return [2 /*return*/];
                 }
@@ -31289,11 +30533,12 @@ var TupleSpace = /** @class */ (function (_super) {
         });
     };
     TupleSpace.prototype.render = function () {
+        var _this = this;
         return (React.createElement("div", null,
             React.createElement("h1", null, location.pathname.substring(1) + "/" + JSON.stringify(this.state.watchingTuple)),
             React.createElement("h2", null, "write"),
             React.createElement("div", null,
-                React.createElement("button", { onClick: this.writeTuple(this.state.watchingTuple) }, JSON.stringify(this.state.watchingTuple))),
+                React.createElement("button", { onClick: function () { return _this.writeTuple(_this.state.watchingTuple); } }, JSON.stringify(this.state.watchingTuple))),
             React.createElement("div", null, "%curl -d 'tuple=" + JSON.stringify(this.state.watchingTuple) + "' " + location.host),
             React.createElement("h2", null, "watch"),
             React.createElement("div", null, this.state.tuples.map(function (tuple, index) {

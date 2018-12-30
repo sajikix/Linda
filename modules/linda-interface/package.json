@@ -1,0 +1,15 @@
+{
+  "name": "linda-interface",
+  "version": "0.0.1",
+  "main": "src/index.js",
+  "author": "Ryusei Sajiki <rsajiki@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "watch": "tsc -w",
+    "build": "tsc"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "typescript": "^2.9.1"
+  }
+}

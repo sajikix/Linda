@@ -1,5 +1,5 @@
 {
-  "name": "Linda-client",
+  "name": "linda-client",
   "version": "1.0.0",
   "main": "dist/lindaClient.js",
   "author": "Ryusei Sajiki <rsajiki@gmail.com>",

@@ -1,0 +1,16 @@
+{
+  "name": "linda-connector",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "author": "Ryusei Sajiki <rsajiki@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "watch": "tsc -w",
+    "build": "tsc"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "linda-client-async": "*",
+    "typescript": "^2.9.1"
+  }
+}
