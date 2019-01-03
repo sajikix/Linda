@@ -45,6 +45,10 @@ router.get(
             res.send(Data);
           });
           break;
+        case "db":
+          res.send(ts.db);
+
+          break;
         default:
           res.send('There is no operation like "' + req.params.operation + '"');
           break;

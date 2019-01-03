@@ -37,6 +37,7 @@ export default class Linda {
         );
       });
       socket.on("_write_operation", (data: LindaOperation) => {
+        console.log("linda/writeOpe");
         this.tupleSpace(data.tsName).write(
           data.payload,
           (resData: InsertData) => {

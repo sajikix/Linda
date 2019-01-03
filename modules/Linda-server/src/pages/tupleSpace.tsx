@@ -29,7 +29,7 @@ class TupleSpace extends React.Component<Props, State> {
     this.setState({ watchingTuple: returnObj });
   }
   async connectLinda() {
-    await this.lindaClient.connect("http://localhost:3000/masuilab");
+    await this.lindaClient.connect("http://new-linda.herokuapp.com/ubitest");
   }
   writeTuple(tuple) {
     this.lindaClient.write(tuple);

@@ -1,7 +1,5 @@
 import { Memory } from "../interfaces";
 
-let memoryDB: Memory = {
-  test: [{ _id: 0, time: Date.now(), type: "init" }],
-};
+let memoryDB: Memory = {};
 
 export default memoryDB;

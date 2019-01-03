@@ -17,15 +17,22 @@ export default class storageClient {
       console.log(tupleSpaceName + " is already exist");
     } else {
       this.tupleSpace = memoryDB[tupleSpaceName] = [
-        { _id: 0, time: Date.now(), type: "init" },
+        {
+          _id: 0,
+          time: Date.now(),
+          _payload: { type: "init" },
+          _from: tupleSpaceName,
+        },
       ];
       console.log(tupleSpaceName + " is created");
     }
   }
   // .map使って書き直せる説
-  get(tuple: Tuple): ResponseTuple {
-    let i: number;
+  async get(tuple: Tuple): Promise<ResponseTuple> {
     for (const t of this.tupleSpace) {
+      console.log(this.tupleSpace.length);
+      console.log("t", t);
+      console.log("tuple", tuple);
       let result = this.isMuch(t._payload, tuple);
       if (result.isMuched) {
         let resData: ResponseTuple = Object.assign(t, {
@@ -34,18 +41,18 @@ export default class storageClient {
         return resData;
       }
     }
-    if (i == 0) {
-      return {
-        _isMuched: false,
-        _id: null,
-        _from: this.tupleSpaceName,
-        _payload: null,
-        _time: null,
-      };
-    }
+
+    return {
+      _isMuched: false,
+      _id: null,
+      _from: this.tupleSpaceName,
+      _payload: null,
+      _time: null,
+    };
   }
 
   insert(writeTuple: Tuple): InsertData {
+    console.log("inserted");
     const time = Date.now();
     const insertData: InsertData = {
       _time: time,
@@ -56,7 +63,7 @@ export default class storageClient {
     this.tupleSpace.unshift(insertData);
     return insertData;
   }
-  //update() {}
+
   delete(id: number): void {
     this.tupleSpace.splice(id, 1);
   }

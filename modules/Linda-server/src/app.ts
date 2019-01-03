@@ -1,9 +1,9 @@
-import * as express from "express";
-import * as dotenv from "dotenv";
-import * as bodyParser from "body-parser";
-import * as cookieParser from "cookie-parser";
-import * as logger from "morgan";
-import * as socketIo from "socket.io";
+import express from "express";
+import dotenv from "dotenv";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import logger from "morgan";
+import socketIO from "socket.io";
 import { createServer, Server } from "http";
 import Linda from "./linda";
 import routeIndex from "./routes";
@@ -11,11 +11,18 @@ import routeIndex from "./routes";
 dotenv.load();
 
 const PORT: number = Number(process.env.PORT) || 3000;
+const options = {
+  cookie: false,
+  serveClient: false,
+  pingTimeout: 15000,
+  pingInterval: 13000,
+};
 
 const app: express.Express = express();
 const server: Server = createServer(app);
-const io: SocketIO.Server = socketIo.listen(server);
+//const io: SocketIO.Server = socketIo.listen(server);
 const linda = new Linda();
+const io = socketIO(server, options);
 
 app.set("views", "views/");
 app.set("view engine", "pug");
@@ -62,6 +69,8 @@ app.use(function(
 
 app.use("/", routeIndex);
 app.set("linda", linda);
+
+process.on("unhandledRejection", console.dir);
 
 console.log(linda.tupleSpaces || "none");
 

@@ -1,5 +1,17 @@
 {
-  "devDependencies": {
-    "lerna": "3.6.0"
-  }
+	"name": "linda",
+	"description": "",
+	"version": "0.0.1",
+	"private": false,
+	"scripts": {
+		"test": "lerna run test",
+		"bootstrap": "npm run clean && lerna bootstrap",
+		"clean": "lerna clean --yes",
+		"lint": "lerna run lint",
+		"type-check": "lerna run type-check",
+		"build": "lerna run build"
+	},
+	"devDependencies": {
+	"lerna": "3.6.0"
+	}
 }

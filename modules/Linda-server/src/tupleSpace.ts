@@ -29,7 +29,12 @@ export default class tupleSpace {
     this.storage = new storageClient(tupleSpaceName);
   }
 
+  get db() {
+    return this.storage.tupleSpace;
+  }
+
   async write(writeTuple: Tuple, callback: WriteCallback): Promise<void> {
+    console.log("ts/writeOpe");
     const resData: InsertData = await this.storage.insert(writeTuple);
     this.emitter.emit("_writeData", writeTuple);
 
