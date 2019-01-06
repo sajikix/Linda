@@ -1,5 +1,5 @@
-import { Memory } from "../interfaces";
+import { MemoryDB } from "../interfaces";
 
-let memoryDB: Memory = {};
+let memoryDB: MemoryDB = {};
 
 export default memoryDB;

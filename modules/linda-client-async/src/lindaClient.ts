@@ -1,67 +1,73 @@
 import io from "socket.io-client";
-import {
-  Tuple,
-  Callback,
-  ResponseTuple,
-  ConnectCallback,
-} from "./interfaces/index";
+import { Tuple, Callback, ConnectCallback } from "./interfaces/index";
+import { LindaOperation, LindaResponse } from "linda-interface";
+import { write } from "fs";
 
 export default class LindaClient {
   socket: SocketIOClient.Socket;
   tupleSpaceName: string;
   constructor() {}
 
-  async connect(url: string) {
-    if (await this.validateURL(url)) {
-      const urlArray = url.split("/");
-      this.socket = await io(urlArray[0] + "//" + urlArray[2]);
-      this.tupleSpaceName = urlArray[3];
-      await this.socket.emit("_join_tuplespace", {
-        tsName: this.tupleSpaceName,
-      });
-    } else {
-      throw "cannot parse URL";
-    }
+  async connect(url: string, tsName: string) {
+    this.socket = io(url);
+    this.tupleSpaceName = tsName;
   }
 
   async read(tuple: Tuple) {
-    let readData = { tsName: this.tupleSpaceName, payload: tuple };
-    this.socket.on("_read_response", (resData: ResponseTuple) => {
+    let readOperation: LindaOperation = {
+      _payload: tuple,
+      _where: this.tupleSpaceName,
+      _type: "read",
+    };
+    this.socket.on("_read_response", (resData: LindaResponse) => {
       return resData;
     });
-    await this.socket.emit("_read_operation", readData);
+    await this.socket.emit("_operation", readOperation);
   }
 
   async write(tuple: Tuple) {
-    let writeData = { tsName: this.tupleSpaceName, payload: tuple };
-    this.socket.on("_write_response", (resData: ResponseTuple) => {
+    let fromInfo = null;
+    // _fromがあった場合from情報に追加
+    if (tuple._from) {
+      fromInfo = tuple._from;
+    }
+    let writeOperation: LindaOperation = {
+      _payload: tuple,
+      _where: this.tupleSpaceName,
+      _type: "write",
+      _from: fromInfo,
+    };
+    this.socket.on("_write_response", (resData: LindaResponse) => {
       return resData;
     });
-    await this.socket.emit("_write_operation", writeData);
+    await this.socket.emit("_operation", writeOperation);
   }
 
   async take(tuple: Tuple) {
-    let takeData = { tsName: this.tupleSpaceName, payload: tuple };
-    this.socket.on("_take_response", (resData: ResponseTuple) => {
+    let takeOperation: LindaOperation = {
+      _payload: tuple,
+      _where: this.tupleSpaceName,
+      _type: "take",
+    };
+    this.socket.on("_take_response", (resData: LindaResponse) => {
       return resData;
     });
-    await this.socket.emit("_take_operation", takeData);
+    await this.socket.emit("_operation", takeOperation);
   }
 
   watch(tuple: Tuple, callback: Callback) {
-    let watchData = { tsName: this.tupleSpaceName, payload: tuple };
-    this.socket.on("_watch_response", (resData: ResponseTuple) => {
+    let watchOperation: LindaOperation = {
+      _payload: tuple,
+      _where: this.tupleSpaceName,
+      _type: "watch",
+    };
+    this.socket.on("_watch_response", (resData: LindaResponse) => {
       callback(resData);
     });
-    this.socket.emit("_watch_operation", watchData);
+    this.socket.emit("_operation", watchOperation);
   }
 
   onDisconnected(callback: ConnectCallback) {
     this.socket.on("disconnect", callback);
-  }
-  private async validateURL(url: string): Promise<boolean> {
-    const regex = /^(http|https):\/\/([\w-]+\.)+([\w-]|:)+\/[\w-]+/;
-    const regex2 = /^(http|https):\/\/localhost:[0-9]+\/[\w-]+/;
-    return regex.test(url) || regex2.test(url);
   }
 }

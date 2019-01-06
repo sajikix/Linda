@@ -1,13 +1,6 @@
 import tupleSpace from "./tupleSpace";
 import { Server } from "http";
-import {
-  LindaOperation,
-  ResponseTuple,
-  WatchResponseTuple,
-  InsertOneWriteOpResult,
-  LindaSubscribeOperation,
-  InsertData,
-} from "./interfaces";
+import { LindaOperation, LindaResponse } from "./interfaces";
 
 export default class Linda {
   tupleSpaces: { [key: string]: tupleSpace };
@@ -28,47 +21,43 @@ export default class Linda {
     this.server = server;
     this.io = io;
     io.sockets.on("connection", (socket: SocketIO.Socket) => {
-      socket.on("_read_operation", (data: LindaOperation) => {
-        this.tupleSpace(data.tsName).read(
-          data.payload,
-          (resData: ResponseTuple) => {
-            socket.emit("_read_response", resData);
-          }
-        );
-      });
-      socket.on("_write_operation", (data: LindaOperation) => {
-        console.log("linda/writeOpe");
-        this.tupleSpace(data.tsName).write(
-          data.payload,
-          (resData: InsertData) => {
-            socket.emit("_write_response", resData);
-          }
-        );
-      });
-      socket.on("_take_operation", (data: LindaOperation) => {
-        this.tupleSpace(data.tsName).take(
-          data.payload,
-          (resData: ResponseTuple) => {
-            socket.emit("_take_response", resData);
-          }
-        );
-      });
-      socket.on("_watch_operation", (data: LindaOperation) => {
-        this.tupleSpace(data.tsName).watch(
-          data.payload,
-          (resData: WatchResponseTuple) => {
-            socket.emit("_watch_response", resData);
-          }
-        );
-      });
-
-      socket.on("_subscribed_data", (data: LindaSubscribeOperation) => {
-        this.tupleSpace(data.tsName).watch(
-          data.payload,
-          (resData: WatchResponseTuple) => {
-            socket.emit("_watch_response", resData);
-          }
-        );
+      socket.on("_operation", (data: LindaOperation) => {
+        switch (data._type) {
+          case "read":
+            this.tupleSpace(data._where).read(
+              data,
+              (resData: LindaResponse) => {
+                socket.emit("_read_response", resData);
+              }
+            );
+            break;
+          case "write":
+            this.tupleSpace(data._where).write(
+              data,
+              (resData: LindaResponse) => {
+                socket.emit("_write_response", resData);
+              }
+            );
+            break;
+          case "take":
+            this.tupleSpace(data._where).take(
+              data,
+              (resData: LindaResponse) => {
+                socket.emit("_take_response", resData);
+              }
+            );
+            break;
+          case "watch":
+            this.tupleSpace(data._where).watch(
+              data,
+              (resData: LindaResponse) => {
+                socket.emit("_watch_response", resData);
+              }
+            );
+            break;
+          default:
+            break;
+        }
       });
     });
   }

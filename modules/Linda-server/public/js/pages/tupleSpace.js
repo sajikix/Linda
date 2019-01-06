@@ -6720,43 +6720,30 @@ var socket_io_client_1 = __importDefault(__webpack_require__(/*! socket.io-clien
 var LindaClient = /** @class */ (function () {
     function LindaClient() {
     }
-    LindaClient.prototype.connect = function (url) {
+    LindaClient.prototype.connect = function (url, tsName) {
         return __awaiter(this, void 0, void 0, function () {
-            var urlArray, _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0: return [4 /*yield*/, this.validateURL(url)];
-                    case 1:
-                        if (!_b.sent()) return [3 /*break*/, 4];
-                        urlArray = url.split("/");
-                        _a = this;
-                        return [4 /*yield*/, socket_io_client_1.default(urlArray[0] + "//" + urlArray[2])];
-                    case 2:
-                        _a.socket = _b.sent();
-                        this.tupleSpaceName = urlArray[3];
-                        return [4 /*yield*/, this.socket.emit("_join_tuplespace", {
-                                tsName: this.tupleSpaceName,
-                            })];
-                    case 3:
-                        _b.sent();
-                        return [3 /*break*/, 5];
-                    case 4: throw "cannot parse URL";
-                    case 5: return [2 /*return*/];
-                }
+            return __generator(this, function (_a) {
+                this.socket = socket_io_client_1.default(url);
+                this.tupleSpaceName = tsName;
+                return [2 /*return*/];
             });
         });
     };
     LindaClient.prototype.read = function (tuple) {
         return __awaiter(this, void 0, void 0, function () {
-            var readData;
+            var readOperation;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        readData = { tsName: this.tupleSpaceName, payload: tuple };
+                        readOperation = {
+                            _payload: tuple,
+                            _where: this.tupleSpaceName,
+                            _type: "read",
+                        };
                         this.socket.on("_read_response", function (resData) {
                             return resData;
                         });
-                        return [4 /*yield*/, this.socket.emit("_read_operation", readData)];
+                        return [4 /*yield*/, this.socket.emit("_operation", readOperation)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -6766,15 +6753,25 @@ var LindaClient = /** @class */ (function () {
     };
     LindaClient.prototype.write = function (tuple) {
         return __awaiter(this, void 0, void 0, function () {
-            var writeData;
+            var fromInfo, writeOperation;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        writeData = { tsName: this.tupleSpaceName, payload: tuple };
+                        fromInfo = null;
+                        // _fromがあった場合from情報に追加
+                        if (tuple._from) {
+                            fromInfo = tuple._from;
+                        }
+                        writeOperation = {
+                            _payload: tuple,
+                            _where: this.tupleSpaceName,
+                            _type: "write",
+                            _from: fromInfo,
+                        };
                         this.socket.on("_write_response", function (resData) {
                             return resData;
                         });
-                        return [4 /*yield*/, this.socket.emit("_write_operation", writeData)];
+                        return [4 /*yield*/, this.socket.emit("_operation", writeOperation)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -6784,15 +6781,19 @@ var LindaClient = /** @class */ (function () {
     };
     LindaClient.prototype.take = function (tuple) {
         return __awaiter(this, void 0, void 0, function () {
-            var takeData;
+            var takeOperation;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        takeData = { tsName: this.tupleSpaceName, payload: tuple };
+                        takeOperation = {
+                            _payload: tuple,
+                            _where: this.tupleSpaceName,
+                            _type: "take",
+                        };
                         this.socket.on("_take_response", function (resData) {
                             return resData;
                         });
-                        return [4 /*yield*/, this.socket.emit("_take_operation", takeData)];
+                        return [4 /*yield*/, this.socket.emit("_operation", takeOperation)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -6801,24 +6802,18 @@ var LindaClient = /** @class */ (function () {
         });
     };
     LindaClient.prototype.watch = function (tuple, callback) {
-        var watchData = { tsName: this.tupleSpaceName, payload: tuple };
+        var watchOperation = {
+            _payload: tuple,
+            _where: this.tupleSpaceName,
+            _type: "watch",
+        };
         this.socket.on("_watch_response", function (resData) {
             callback(resData);
         });
-        this.socket.emit("_watch_operation", watchData);
+        this.socket.emit("_operation", watchOperation);
     };
     LindaClient.prototype.onDisconnected = function (callback) {
         this.socket.on("disconnect", callback);
-    };
-    LindaClient.prototype.validateURL = function (url) {
-        return __awaiter(this, void 0, void 0, function () {
-            var regex, regex2;
-            return __generator(this, function (_a) {
-                regex = /^(http|https):\/\/([\w-]+\.)+([\w-]|:)+\/[\w-]+/;
-                regex2 = /^(http|https):\/\/localhost:[0-9]+\/[\w-]+/;
-                return [2 /*return*/, regex.test(url) || regex2.test(url)];
-            });
-        });
     };
     return LindaClient;
 }());
@@ -32675,6 +32670,7 @@ var TupleSpace = /** @class */ (function (_super) {
         _this.state = {
             tuples: [],
             watchingTuple: {},
+            tupleSpaceName: location.pathname.substring(1),
         };
         _this.lindaClient = new linda_client_async_1.default();
         return _this;
@@ -32705,8 +32701,11 @@ var TupleSpace = /** @class */ (function (_super) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.lindaClient.connect("http://new-linda.herokuapp.com/ubitest")];
+                    case 0: 
+                    // await this.lindaClient.connect("http://new-linda.herokuapp.com","ubitest");
+                    return [4 /*yield*/, this.lindaClient.connect(location.origin, this.state.tupleSpaceName)];
                     case 1:
+                        // await this.lindaClient.connect("http://new-linda.herokuapp.com","ubitest");
                         _a.sent();
                         return [2 /*return*/];
                 }
@@ -32714,7 +32713,16 @@ var TupleSpace = /** @class */ (function (_super) {
         });
     };
     TupleSpace.prototype.writeTuple = function (tuple) {
-        this.lindaClient.write(tuple);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.lindaClient.write(tuple)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     TupleSpace.prototype.watchTuple = function (tuple) {
         return __awaiter(this, void 0, void 0, function () {
@@ -32728,6 +32736,7 @@ var TupleSpace = /** @class */ (function (_super) {
                     return __generator(this, function (_b) {
                         switch (_b.label) {
                             case 0:
+                                console.log("dissconnected!");
                                 this.lindaClient = null;
                                 _a = this;
                                 return [4 /*yield*/, new linda_client_async_1.default()];
@@ -32765,7 +32774,7 @@ var TupleSpace = /** @class */ (function (_super) {
     TupleSpace.prototype.render = function () {
         var _this = this;
         return (React.createElement("div", null,
-            React.createElement("h1", null, location.pathname.substring(1) + "/" + JSON.stringify(this.state.watchingTuple)),
+            React.createElement("h1", null, this.state.tupleSpaceName + "/" + JSON.stringify(this.state.watchingTuple)),
             React.createElement("h2", null, "write"),
             React.createElement("div", null,
                 React.createElement("button", { onClick: function () { return _this.writeTuple(_this.state.watchingTuple); } }, JSON.stringify(this.state.watchingTuple))),

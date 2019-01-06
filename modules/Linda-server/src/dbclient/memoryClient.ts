@@ -3,12 +3,15 @@ import {
   Tuple,
   ResponseTuple,
   InsertData,
+  LindaOperation,
+  TupleInfo,
+  LindaResponse,
 } from "../interfaces";
 
 import memoryDB from "../db/memoryDB";
 
 export default class storageClient {
-  tupleSpace: any;
+  tupleSpace: Array<TupleInfo>;
   tupleSpaceName: string;
   constructor(tupleSpaceName: string) {
     this.tupleSpaceName = tupleSpaceName;
@@ -19,52 +22,51 @@ export default class storageClient {
       this.tupleSpace = memoryDB[tupleSpaceName] = [
         {
           _id: 0,
-          time: Date.now(),
+          _time: Date.now(),
           _payload: { type: "init" },
           _from: tupleSpaceName,
+          _where: tupleSpaceName,
         },
       ];
       console.log(tupleSpaceName + " is created");
     }
   }
-  // .map使って書き直せる説
-  async get(tuple: Tuple): Promise<ResponseTuple> {
+
+  async insert(operation: LindaOperation): Promise<LindaResponse> {
+    const time = Date.now();
+    const insertData: TupleInfo = {
+      _time: time,
+      _where: this.tupleSpaceName,
+      _payload: operation._payload,
+      _id: this.tupleSpace.length,
+    };
+    if (operation._from) {
+      insertData._from = operation._from;
+    }
+    this.tupleSpace.unshift(insertData);
+    return insertData;
+  }
+
+  async get(operation: LindaOperation): Promise<LindaResponse> {
     for (const t of this.tupleSpace) {
-      console.log(this.tupleSpace.length);
-      console.log("t", t);
-      console.log("tuple", tuple);
-      let result = this.isMuch(t._payload, tuple);
+      let result = this.isMuch(t._payload, operation._payload);
       if (result.isMuched) {
-        let resData: ResponseTuple = Object.assign(t, {
+        let resData: LindaResponse = Object.assign(t, {
           _isMuched: true,
         });
         return resData;
       }
     }
-
     return {
       _isMuched: false,
       _id: null,
-      _from: this.tupleSpaceName,
       _payload: null,
       _time: null,
+      _where: this.tupleSpaceName,
     };
   }
 
-  insert(writeTuple: Tuple): InsertData {
-    console.log("inserted");
-    const time = Date.now();
-    const insertData: InsertData = {
-      _time: time,
-      _from: this.tupleSpaceName,
-      _payload: writeTuple,
-      _id: this.tupleSpace.length,
-    };
-    this.tupleSpace.unshift(insertData);
-    return insertData;
-  }
-
-  delete(id: number): void {
+  async delete(id: number): Promise<void> {
     this.tupleSpace.splice(id, 1);
   }
 

@@ -10,7 +10,7 @@ import routeIndex from "./routes";
 
 dotenv.load();
 
-const PORT: number = Number(process.env.PORT) || 3000;
+const PORT: number = Number(process.env.PORT) || 7777;
 const options = {
   cookie: false,
   serveClient: false,

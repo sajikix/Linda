@@ -6,16 +6,18 @@ type Props = {};
 type State = {
   tuples: Array<any>;
   watchingTuple: any;
+  tupleSpaceName: string;
 };
 
 class TupleSpace extends React.Component<Props, State> {
   state: State;
-  lindaClient: any;
+  lindaClient: LindaClientAsync;
   constructor(props) {
     super(props);
     this.state = {
       tuples: [],
       watchingTuple: {},
+      tupleSpaceName: location.pathname.substring(1),
     };
     this.lindaClient = new LindaClientAsync();
   }
@@ -29,16 +31,21 @@ class TupleSpace extends React.Component<Props, State> {
     this.setState({ watchingTuple: returnObj });
   }
   async connectLinda() {
-    await this.lindaClient.connect("http://new-linda.herokuapp.com/ubitest");
+    // await this.lindaClient.connect("http://new-linda.herokuapp.com","ubitest");
+    await this.lindaClient.connect(
+      location.origin,
+      this.state.tupleSpaceName
+    );
   }
-  writeTuple(tuple) {
-    this.lindaClient.write(tuple);
+  async writeTuple(tuple) {
+    await this.lindaClient.write(tuple);
   }
   async watchTuple(tuple) {
     this.lindaClient.watch(tuple, data => {
       this.setState({ tuples: [data._payload, ...this.state.tuples] });
     });
     this.lindaClient.onDisconnected(async () => {
+      console.log("dissconnected!");
       this.lindaClient = null;
       this.lindaClient = await new LindaClientAsync();
       await this.connectLinda();
@@ -52,7 +59,7 @@ class TupleSpace extends React.Component<Props, State> {
   render() {
     return (
       <div>
-        <h1>{`${location.pathname.substring(1)}/${JSON.stringify(
+        <h1>{`${this.state.tupleSpaceName}/${JSON.stringify(
           this.state.watchingTuple
         )}`}</h1>
         <h2>{"write"}</h2>

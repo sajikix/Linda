@@ -1,18 +1,52 @@
 import { ObjectId } from "bson";
+import memoryDB from "../db/memoryDB";
 
-export type Tuples = [Tuple];
-
-export type TupleSpace = {
-  tuples: Tuples;
+//new
+export type LindaOperation = {
+  _payload: Tuple;
+  _where: string;
+  _type: "read" | "write" | "watch" | "take";
+  _from?: string;
 };
 
-export type Memory = {
-  [key: string]: Tuples;
+export type LindaResponse = {
+  _payload: Tuple;
+  _where: string;
+  _time: number;
+  _id?: number | any;
+  _isMuched?: boolean;
+  _from?: string;
 };
 
+export interface LindaCallback {
+  (res: LindaResponse): void;
+}
+
+export type MemoryDB = {
+  [tsName: string]: Array<TupleInfo>;
+};
+
+export type TupleInfo = {
+  _payload: Tuple;
+  _where: string;
+  _from?: string;
+  _time: number;
+  _id: number | any;
+};
 export type Tuple = {
   [key: string]: number | string | boolean | Object;
 };
+
+// export type TupleArray = [Tuple];
+
+// export type TupleSpace = {
+//   tuples: Tuples;
+// };
+
+// export type Memory = {
+//   [key: string]: Tuples;
+// };
+
 export type InsertData = {
   _time: number;
   _from: string;
@@ -47,10 +81,10 @@ export type IsMuchResponse = {
   res: Tuple | null;
 };
 
-export type LindaOperation = {
-  tsName: string;
-  payload: Tuple;
-};
+// export type LindaOperation = {
+//   tsName: string;
+//   payload: Tuple;
+// };
 
 export type LindaSubscribeOperation = {
   tsName: string;

@@ -8,6 +8,10 @@ import {
   InsertOneWriteOpResult,
   WatchResponseTuple,
   InsertData,
+  LindaCallback,
+  LindaOperation,
+  TupleInfo,
+  LindaResponse,
 } from "./interfaces";
 import { EventEmitter2 } from "eventemitter2";
 // default:using MongoDB
@@ -33,37 +37,51 @@ export default class tupleSpace {
     return this.storage.tupleSpace;
   }
 
-  async write(writeTuple: Tuple, callback: WriteCallback): Promise<void> {
-    console.log("ts/writeOpe");
-    const resData: InsertData = await this.storage.insert(writeTuple);
-    this.emitter.emit("_writeData", writeTuple);
-
-    callback(resData);
-  }
-  async read(searchTuple: Tuple, callback: ReadTakeCallback): Promise<void> {
-    let resData: ResponseTuple = await this.storage.get(searchTuple);
+  async write(
+    operation: LindaOperation,
+    callback: LindaCallback
+  ): Promise<void> {
+    const resData: LindaResponse = await this.storage.insert(operation);
+    this.emitter.emit("_writeData", operation);
     callback(resData);
   }
 
-  watch(watchTuple: Tuple, callback: WatchCallback): void {
-    this.emitter.on("_writeData", (resTuple: Tuple) => {
-      let result: IsMuchResponse = this.storage.isMuch(resTuple, watchTuple);
-      if (result.isMuched) {
-        const resData: WatchResponseTuple = {
-          _time: Date.now(),
-          _from: this.tupleSpaceName,
-          _payload: result.res,
-        };
-        callback(resData);
-      }
-    });
+  async read(
+    operation: LindaOperation,
+    callback: LindaCallback
+  ): Promise<void> {
+    let resData: LindaResponse = await this.storage.get(operation);
+    callback(resData);
   }
 
-  async take(takeTuple: Tuple, callback: ReadTakeCallback): Promise<void> {
-    let resData: ResponseTuple = await this.storage.get(takeTuple);
+  async take(
+    operation: LindaOperation,
+    callback: LindaCallback
+  ): Promise<void> {
+    let resData: LindaResponse = await this.storage.get(operation);
     if (resData._isMuched) {
       await this.storage.delete(resData._id);
     }
     callback(resData);
+  }
+
+  watch(operation: LindaOperation, callback: LindaCallback): void {
+    this.emitter.on("_writeData", (eventTuple: LindaOperation) => {
+      let result: IsMuchResponse = this.storage.isMuch(
+        eventTuple._payload,
+        operation._payload
+      );
+      if (result.isMuched) {
+        const resData: LindaResponse = {
+          _time: Date.now(),
+          _payload: result.res,
+          _where: this.tupleSpaceName,
+        };
+        if (eventTuple._from) {
+          resData._from = eventTuple._from;
+        }
+        callback(resData);
+      }
+    });
   }
 }
