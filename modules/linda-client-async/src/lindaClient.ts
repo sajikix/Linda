@@ -1,7 +1,6 @@
 import io from "socket.io-client";
 import { Tuple, Callback, ConnectCallback } from "./interfaces/index";
 import { LindaOperation, LindaResponse } from "linda-interface";
-import { write } from "fs";
 
 export default class LindaClient {
   socket: SocketIOClient.Socket;
@@ -27,7 +26,6 @@ export default class LindaClient {
 
   async write(tuple: Tuple) {
     let fromInfo = null;
-    // _fromがあった場合from情報に追加
     if (tuple._from) {
       fromInfo = tuple._from;
     }

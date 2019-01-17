@@ -1,5 +1,4 @@
 import {
-  Tuple,
   InsertData,
   InsertOneWriteOpResult,
   DeleteWriteOpResultObject,
@@ -7,6 +6,7 @@ import {
   SavedData,
   IsMuchResponse,
 } from "../interfaces";
+import { Tuple } from "linda-interface";
 
 import collection from "../db/mongoDB";
 import { ObjectID } from "bson";

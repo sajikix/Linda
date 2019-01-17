@@ -1,13 +1,10 @@
+import { IsMuchResponse } from "../interfaces";
 import {
-  IsMuchResponse,
   Tuple,
-  ResponseTuple,
-  InsertData,
   LindaOperation,
   TupleInfo,
   LindaResponse,
-} from "../interfaces";
-
+} from "linda-interface";
 import memoryDB from "../db/memoryDB";
 
 export default class storageClient {

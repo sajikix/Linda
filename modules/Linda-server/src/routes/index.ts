@@ -5,6 +5,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { ResponseTuple, InsertOneWriteOpResult } from "../interfaces";
 import app from "../app";
+import { LindaOperation } from "linda-interface";
 
 router.get(
   "/:tupleSpaceName/:operation",
@@ -28,20 +29,25 @@ router.get(
       }
     } else {
       const linda = app.get("linda");
-      let ts = linda.tupleSpace(req.params.tupleSpaceName);
+      const ts = linda.tupleSpace(req.params.tupleSpaceName);
+      const operation: LindaOperation = {
+        _payload: req.query,
+        _type: req.params.operation,
+        _where: req.params.tupleSpaceName,
+      };
       switch (req.params.operation) {
         case "read":
-          ts.read(req.query, (Data: ResponseTuple) => {
+          ts.read(operation, (Data: ResponseTuple) => {
             res.send(Data);
           });
           break;
         case "take":
-          ts.take(req.query, (Data: ResponseTuple) => {
+          ts.take(operation, (Data: ResponseTuple) => {
             res.send(Data);
           });
           break;
         case "write":
-          ts.write(req.query, (Data: InsertOneWriteOpResult) => {
+          ts.write(operation, (Data: InsertOneWriteOpResult) => {
             res.send(Data);
           });
           break;

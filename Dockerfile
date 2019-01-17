@@ -13,6 +13,7 @@ RUN npm install
 
 COPY /modules/linda-client-async ./modules/linda-client-async
 COPY /modules/linda-server ./modules/linda-server
+COPY /modules/linda-interface ./modules/linda-interface
 
 ENV NODE_ENV=development
 

@@ -1,20 +1,6 @@
-import {
-  Tuple,
-  ResponseTuple,
-  IsMuchResponse,
-  WatchCallback,
-  WriteCallback,
-  ReadTakeCallback,
-  InsertOneWriteOpResult,
-  WatchResponseTuple,
-  InsertData,
-  LindaCallback,
-  LindaOperation,
-  TupleInfo,
-  LindaResponse,
-} from "./interfaces";
+import { IsMuchResponse } from "./interfaces";
+import { LindaCallback, LindaOperation, LindaResponse } from "linda-interface";
 import { EventEmitter2 } from "eventemitter2";
-// default:using MongoDB
 import storageClient from "./dbclient/memoryClient";
 
 export default class tupleSpace {
@@ -42,7 +28,8 @@ export default class tupleSpace {
     callback: LindaCallback
   ): Promise<void> {
     const resData: LindaResponse = await this.storage.insert(operation);
-    this.emitter.emit("_writeData", operation);
+    // this.emitter.emit("_writeData", operation);
+    this.emitter.emit("_writeData", resData);
     callback(resData);
   }
 
@@ -66,7 +53,7 @@ export default class tupleSpace {
   }
 
   watch(operation: LindaOperation, callback: LindaCallback): void {
-    this.emitter.on("_writeData", (eventTuple: LindaOperation) => {
+    this.emitter.on("_writeData", (eventTuple: LindaResponse) => {
       let result: IsMuchResponse = this.storage.isMuch(
         eventTuple._payload,
         operation._payload
@@ -76,6 +63,7 @@ export default class tupleSpace {
           _time: Date.now(),
           _payload: result.res,
           _where: this.tupleSpaceName,
+          _id: eventTuple._id,
         };
         if (eventTuple._from) {
           resData._from = eventTuple._from;

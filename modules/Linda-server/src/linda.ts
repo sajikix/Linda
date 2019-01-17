@@ -1,6 +1,6 @@
 import tupleSpace from "./tupleSpace";
 import { Server } from "http";
-import { LindaOperation, LindaResponse } from "./interfaces";
+import { LindaOperation, LindaResponse } from "linda-interface";
 
 export default class Linda {
   tupleSpaces: { [key: string]: tupleSpace };

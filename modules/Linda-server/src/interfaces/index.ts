@@ -1,51 +1,15 @@
 import { ObjectId } from "bson";
-import memoryDB from "../db/memoryDB";
-
-//new
-export type LindaOperation = {
-  _payload: Tuple;
-  _where: string;
-  _type: "read" | "write" | "watch" | "take";
-  _from?: string;
-};
-
-export type LindaResponse = {
-  _payload: Tuple;
-  _where: string;
-  _time: number;
-  _id?: number | any;
-  _isMuched?: boolean;
-  _from?: string;
-};
-
-export interface LindaCallback {
-  (res: LindaResponse): void;
-}
+// import memoryDB from "../db/memoryDB";
+import { Tuple, TupleInfo } from "linda-interface";
 
 export type MemoryDB = {
   [tsName: string]: Array<TupleInfo>;
 };
 
-export type TupleInfo = {
-  _payload: Tuple;
-  _where: string;
-  _from?: string;
-  _time: number;
-  _id: number | any;
+export type IsMuchResponse = {
+  isMuched: boolean;
+  res: Tuple | null;
 };
-export type Tuple = {
-  [key: string]: number | string | boolean | Object;
-};
-
-// export type TupleArray = [Tuple];
-
-// export type TupleSpace = {
-//   tuples: Tuples;
-// };
-
-// export type Memory = {
-//   [key: string]: Tuples;
-// };
 
 export type InsertData = {
   _time: number;
@@ -54,7 +18,7 @@ export type InsertData = {
   _id?: number;
 };
 
-//FIXME: MemoryClientの時の型
+//FIXME: 以下順次廃止予定
 export type SavedData = {
   _time: number;
   _from: string;
@@ -76,15 +40,10 @@ export type WatchResponseTuple = {
   _payload: Object;
 };
 
-export type IsMuchResponse = {
-  isMuched: boolean;
-  res: Tuple | null;
+export type LindaOperation = {
+  tsName: string;
+  payload: Tuple;
 };
-
-// export type LindaOperation = {
-//   tsName: string;
-//   payload: Tuple;
-// };
 
 export type LindaSubscribeOperation = {
   tsName: string;

@@ -6758,7 +6758,6 @@ var LindaClient = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         fromInfo = null;
-                        // _fromがあった場合from情報に追加
                         if (tuple._from) {
                             fromInfo = tuple._from;
                         }
